@@ -1,28 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<div class="admin-tabs">
+    <a href="/admin">📊 Tableau de bord</a>
+    <a href="/admin/utilisateurs">👥 Utilisateurs</a>
+    <a href="/admin/playbacks">🎵 Playbacks</a>
+    <a href="/admin/recharges" class="active">💳 Recharges</a>
+    <a href="/admin/playback/new">➕ Nouveau playback</a>
+    <a href="/admin/historique">📜 Historique</a>
+</div>
+
 <h2>Demandes de recharge</h2>
 
 <h3>⏳ En attente</h3>
 {% if pending %}
-<table>
-    <tr><th>Client</th><th>Montant</th><th>Numéro utilisé</th><th>Date</th><th>Action</th></tr>
+<table class="responsive-table">
+    <thead>
+        <tr><th>Client</th><th>Montant</th><th>Numéro utilisé</th><th>Date</th><th>Action</th></tr>
+    </thead>
+    <tbody>
     {% for r in pending %}
     <tr>
-        <td>{{ r.user.username }}</td>
-        <td>{{ r.amount }} pts ({{ r.amount }} Ar)</td>
-        <td>{{ r.phone_used }}</td>
-        <td>{{ r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "—" }}</td>
-        <td>
+        <td data-label="Client">{{ r.user.username }}</td>
+        <td data-label="Montant">{{ r.amount }} pts ({{ r.amount }} Ar)</td>
+        <td data-label="Numéro utilisé">{{ r.phone_used }}</td>
+        <td data-label="Date">{{ r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "—" }}</td>
+        <td data-label="Action">
             <form method="post" action="/admin/recharges/{{ r.id }}/valider" style="display:inline; background:none; padding:0;">
                 <button type="submit">✅ Valider</button>
             </form>
             <form method="post" action="/admin/recharges/{{ r.id }}/refuser" style="display:inline; background:none; padding:0;">
-                <button type="submit">❌ Refuser</button>
+                <button type="submit" style="background:#e22134;">❌ Refuser</button>
             </form>
         </td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 {% else %}
 <p>Aucune demande en attente.</p>
@@ -30,14 +44,17 @@
 
 <h3>Dernières demandes (toutes)</h3>
 {% if all_requests %}
-<table>
-    <tr><th>Date</th><th>Client</th><th>Montant</th><th>Statut</th></tr>
+<table class="responsive-table">
+    <thead>
+        <tr><th>Date</th><th>Client</th><th>Montant</th><th>Statut</th></tr>
+    </thead>
+    <tbody>
     {% for r in all_requests %}
     <tr>
-        <td>{{ r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "—" }}</td>
-        <td>{{ r.user.username }}</td>
-        <td>{{ r.amount }} pts</td>
-        <td>
+        <td data-label="Date">{{ r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "—" }}</td>
+        <td data-label="Client">{{ r.user.username }}</td>
+        <td data-label="Montant">{{ r.amount }} pts</td>
+        <td data-label="Statut">
             {% if r.status == 'pending' %}⏳ En attente
             {% elif r.status == 'validated' %}✅ Validée
             {% elif r.status == 'refused' %}❌ Refusée
@@ -45,10 +62,11 @@
         </td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 {% else %}
 <p>Aucune demande.</p>
 {% endif %}
 
-<p><a href="/dashboard">Retour</a></p>
+<p><a href="/admin">Retour</a></p>
 {% endblock %}

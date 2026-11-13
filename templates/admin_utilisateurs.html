@@ -17,36 +17,39 @@
 <p style="color:#e22134;">⚠️ {{ nb_blocked }} utilisateur(s) bloqué(s)</p>
 {% endif %}
 
-<table>
-    <tr>
-        <th>ID</th>
-        <th>Pseudo</th>
-        <th>Téléphone</th>
-        <th>Points</th>
-        <th>Playbacks</th>
-        <th>Admin</th>
-        <th>Statut</th>
-        <th>Actions</th>
-    </tr>
+<table class="responsive-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Pseudo</th>
+            <th>Téléphone</th>
+            <th>Points</th>
+            <th>Playbacks</th>
+            <th>Admin</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
     {% for u in users %}
-    <tr style="{% if u.is_blocked %}opacity:0.5;{% endif %}">
-        <td>{{ u.id }}</td>
-        <td>
+    <tr {% if u.is_blocked %}style="opacity:0.5;"{% endif %}>
+        <td data-label="ID">{{ u.id }}</td>
+        <td data-label="Pseudo">
             {{ u.username }}
             {% if u.is_blocked %}<span style="color:#e22134;"> 🚫</span>{% endif %}
         </td>
-        <td>{{ u.phone }}</td>
-        <td>{{ u.points }} pts</td>
-        <td>{{ u.purchases|length }}</td>
-        <td>{% if u.is_admin %}✅{% else %}❌{% endif %}</td>
-        <td>
+        <td data-label="Téléphone">{{ u.phone }}</td>
+        <td data-label="Points">{{ u.points }} pts</td>
+        <td data-label="Playbacks">{{ u.purchases|length }}</td>
+        <td data-label="Admin">{% if u.is_admin %}✅{% else %}❌{% endif %}</td>
+        <td data-label="Statut">
             {% if u.is_blocked %}
                 <span style="color:#e22134;">🚫 Bloqué</span>
             {% else %}
                 <span style="color:#1db954;">✅ Actif</span>
             {% endif %}
         </td>
-        <td>
+        <td data-label="Actions">
             <a href="/admin/utilisateurs/{{ u.id }}/modifier-points" style="margin-right:8px;">💰 Points</a>
 
             {% if u.id != current_user.id %}
@@ -75,6 +78,7 @@
         </td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 
 <p><a href="/admin">Retour</a></p>

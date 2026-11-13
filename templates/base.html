@@ -1,76 +1,161 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PLAYBACK.MG</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- 🍔 Case à cocher cachée pour le menu burger -->
+    <input type="checkbox" id="menu-toggle" class="menu-toggle" />
 
     <header>
-        <div class="header-left">
-            <h1>🎵 PLAYBACK.MG</h1>
-            <nav>
-                <a href="/catalogue">Catalogue</a>
-            </nav>
-        </div>
+      <div class="header-left">
+        <h1>
+          <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="PLAYBACK.MG"
+            class="logo"
+          />
+          <span class="logo-text">PLAYBACK.MG</span>
+        </h1>
+        <nav class="desktop-nav">
+          <a href="/">Accueil</a>
+          <a href="/catalogue">Catalogue</a>
+        </nav>
+      </div>
 
-        <div class="header-right">
-            {% if current_user.is_authenticated %}
-                <div class="user-menu">
-                    <span class="user-name" tabindex="0">
-                        👤 {{ current_user.username }}
-                        <span class="user-points">💰 {{ current_user.points }} pts</span>
-                        <span class="user-playbacks">🎵 {{ current_user.purchases|length }}</span>
-                        {% if unread_notifications > 0 %}
-                            <span class="notif-badge">🔔 {{ unread_notifications }}</span>
-                        {% endif %}
-                        <span class="arrow">▾</span>
-                    </span>
-                    <div class="user-dropdown">
-                        <div class="user-summary">
-                            <strong>{{ current_user.username }}</strong><br>
-                            <small>Solde : {{ current_user.points }} pts ({{ current_user.points }} Ar)</small><br>
-                            <small>Playbacks : {{ current_user.purchases|length }}</small>
-                        </div>
-                        <hr style="border-color:#333; margin:5px 0;">
-                        <a href="/dashboard">Mon profil</a>
-                        <a href="/mes-playbacks">Mes playbacks</a>
-                        <a href="/mes-gains">Mes gains</a>
-                        <a href="/recharge">Recharger</a>
-                        <a href="/mes-notifications">
-                            🔔 Notifications
-                            {% if unread_notifications > 0 %}
-                                <span class="notif-badge-inline">{{ unread_notifications }}</span>
-                            {% endif %}
-                        </a>
-                        {% if current_user.is_admin %}
-                            <a href="/admin">👑 Administration</a>
-                        {% endif %}
-                        <hr style="border-color:#333; margin:5px 0;">
-                        <a href="/logout">Déconnexion</a>
-                    </div>
-                </div>
-            {% else %}
-                <div class="auth-links">
-                    <a href="/login">Connexion</a>
-                    <a href="/register" class="btn-register">Inscription</a>
-                </div>
+      <div class="header-right">
+        {% if current_user.is_authenticated %}
+        <!-- Badge visible sur le burger (mobile) -->
+        {% if unread_notifications > 0 %}
+        <label for="menu-toggle" class="burger-badge"
+          >🔔 {{ unread_notifications }}</label
+        >
+        {% endif %}
+
+        <div class="user-menu desktop-only">
+          <span class="user-name" tabindex="0">
+            👤 {{ current_user.username }}
+            <span class="user-points">💰 {{ current_user.points }} pts</span>
+            <span class="user-playbacks"
+              >🎵 {{ current_user.purchases|length }}</span
+            >
+            {% if unread_notifications > 0 %}
+            <span class="notif-badge">🔔 {{ unread_notifications }}</span>
             {% endif %}
+            <span class="arrow">▾</span>
+          </span>
+          <div class="user-dropdown">
+            <div class="user-summary">
+              <strong>{{ current_user.username }}</strong><br />
+              <small
+                >Solde : {{ current_user.points }} pts ({{ current_user.points
+                }} Ar)</small
+              ><br />
+              <small>Playbacks : {{ current_user.purchases|length }}</small>
+            </div>
+            <hr style="border-color: #333; margin: 5px 0" />
+            <a href="/dashboard">Mon profil</a>
+            <a href="/mes-playbacks">Mes playbacks</a>
+            <a href="/mes-gains">Mes gains</a>
+            <a href="/recharge">Recharger</a>
+            <a href="/mes-notifications">
+              🔔 Notifications {% if unread_notifications > 0 %}
+              <span class="notif-badge-inline">{{ unread_notifications }}</span>
+              {% endif %}
+            </a>
+            {% if current_user.is_admin %}
+            <a href="/admin">👑 Administration</a>
+            {% endif %}
+            <hr style="border-color: #333; margin: 5px 0" />
+            <a href="/logout">Déconnexion</a>
+          </div>
         </div>
+        {% else %}
+        <div class="auth-links desktop-only">
+          <a href="/login">Connexion</a>
+          <a href="/register" class="btn-register">Inscription</a>
+        </div>
+        {% endif %}
+
+        <!-- 🍔 Bouton burger (visible sur mobile) -->
+        <label for="menu-toggle" class="burger-button">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+      </div>
     </header>
 
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for msg in messages %}
-                <div class="flash">{{ msg }}</div>
-            {% endfor %}
+    <!-- 📱 Panneau latéral (mobile) -->
+    <label for="menu-toggle" class="mobile-menu-overlay"></label>
+    <aside class="mobile-menu">
+      <div class="mobile-menu-header">
+        <h3>
+          <img
+            src="{{ url_for('static', filename='logo.png') }}"
+            alt="PLAYBACK.MG"
+            class="logo-small"
+          />
+          PLAYBACK.MG
+        </h3>
+        <label for="menu-toggle" class="close-button">✕</label>
+      </div>
+
+      {% if current_user.is_authenticated %}
+      <div class="mobile-user-info">
+        <strong>👤 {{ current_user.username }}</strong>
+        <small
+          >💰 {{ current_user.points }} pts ({{ current_user.points }}
+          Ar)</small
+        >
+        <small>🎵 {{ current_user.purchases|length }} playback(s)</small>
+      </div>
+      {% endif %}
+
+      <nav class="mobile-nav">
+        <a href="/">🏠 Accueil</a>
+        <a href="/catalogue">🎵 Catalogue</a>
+        {% if current_user.is_authenticated %}
+        <a href="/dashboard">👤 Mon profil</a>
+        <a href="/mes-playbacks">🎧 Mes playbacks</a>
+        <a href="/mes-gains">⭐ Mes gains</a>
+        <a href="/recharge">💳 Recharger</a>
+        <a href="/mes-notifications">
+          🔔 Notifications {% if unread_notifications > 0 %}
+          <span class="notif-badge-inline">{{ unread_notifications }}</span>
+          {% endif %}
+        </a>
+        {% if current_user.is_admin %}
+        <a href="/admin">👑 Administration</a>
         {% endif %}
-    {% endwith %}
+        <hr style="border-color: #333; margin: 10px 0" />
+        <a href="/logout" style="color: #e22134">🚪 Déconnexion</a>
+        {% else %}
+        <hr style="border-color: #333; margin: 10px 0" />
+        <a href="/login">🔑 Connexion</a>
+        <a href="/register">✨ Inscription</a>
+        {% endif %}
+      </nav>
+    </aside>
+
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for msg in
+    messages %}
+    <div class="flash">{{ msg }}</div>
+    {% endfor %} {% endif %} {% endwith %}
 
     <main>{% block content %}{% endblock %}</main>
 
     <footer><p>© 2026 PLAYBACK.MG</p></footer>
-
-</body>
+  </body>
 </html>

@@ -7,16 +7,20 @@
 
 {% if gains %}
 <h3>Historique</h3>
-<table>
-    <tr><th>Date</th><th>Playback</th><th>Acheteur</th><th>Points gagnés</th></tr>
+<table class="responsive-table">
+    <thead>
+        <tr><th>Date</th><th>Playback</th><th>Acheteur</th><th>Points gagnés</th></tr>
+    </thead>
+    <tbody>
     {% for g in gains %}
     <tr>
-        <td>{{ g.created_at.strftime("%d/%m/%Y %H:%M") if g.created_at else "—" }}</td>
-        <td>{{ g.playback.title if g.playback else "—" }}</td>
-        <td>{{ g.buyer.username if g.buyer else "—" }}</td>
-        <td>+{{ g.amount }} pts ({{ g.amount }} Ar)</td>
+        <td data-label="Date">{{ g.created_at.strftime("%d/%m/%Y %H:%M") if g.created_at else "—" }}</td>
+        <td data-label="Playback">{{ g.playback.title if g.playback else "—" }}</td>
+        <td data-label="Acheteur">{{ g.buyer.username if g.buyer else "—" }}</td>
+        <td data-label="Points gagnés">+{{ g.amount }} pts ({{ g.amount }} Ar)</td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 {% else %}
 <p>Vous n'avez encore rien gagné. Vos gains apparaîtront ici quand quelqu'un achètera un playback que vous possédez.</p>
