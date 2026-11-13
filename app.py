@@ -5,7 +5,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'changez-cette-cle-secrete'
+app.config['SECRET_KEY'] = 'c9cfd3a3060ab29d59e28d3268ea991e9c6e5b2ca9a83085016e352e2adb4084'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///playback.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -844,4 +844,4 @@ def server_error(e):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)

@@ -1,0 +1,20 @@
+# Base de données
+*.db
+*.sqlite
+instance/
+
+# Environnement virtuel
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+.idea/
+
+# Fichiers temporaires
+*.log
+.DS_Store
