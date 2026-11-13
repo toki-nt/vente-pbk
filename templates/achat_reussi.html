@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>✅ Achat réussi !</h2>
+<p>Vous avez acheté <strong>{{ pb.title }}</strong> pour {{ purchase.price_paid }} pts.</p>
+<p>Votre nouveau solde : {{ current_user.points }} pts.</p>
+<p>
+    <a href="/mes-playbacks">Mes playbacks</a> |
+    <a href="/catalogue">Retour au catalogue</a>
+</p>
+{% endblock %}

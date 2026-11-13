@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Créer un compte</h2>
+<form method="post">
+    <p>
+        <label>Pseudo</label>
+        <input type="text" name="username" required>
+    </p>
+    <p>
+        <label>Téléphone (Mobile Money)</label>
+        <input type="tel" name="phone" required>
+    </p>
+    <p>
+        <label>Mot de passe</label>
+        <input type="password" name="password" required>
+    </p>
+    <p>
+        <button type="submit">S'inscrire</button>
+    </p>
+</form>
+<p>Déjà un compte ? <a href="/login">Se connecter</a></p>
+{% endblock %}

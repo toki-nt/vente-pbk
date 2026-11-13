@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bienvenue sur PLAYBACK.MG</h2>
+<p>Découvrez notre catalogue de playbacks.</p>
+<p>
+    <a href="/catalogue">Voir le catalogue</a>
+    {% if not current_user.is_authenticated %}
+        | <a href="/register">Créer un compte</a>
+    {% endif %}
+</p>
+{% endblock %}

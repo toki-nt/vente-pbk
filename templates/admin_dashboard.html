@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>👑 Administration PLAYBACK.MG</h2>
+
+<h3>📊 Statistiques globales</h3>
+<div class="stats-grid">
+    <div class="stat-card">
+        <span class="stat-label">Utilisateurs</span>
+        <span class="stat-value">{{ nb_users }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Playbacks</span>
+        <span class="stat-value">{{ nb_playbacks }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Achats</span>
+        <span class="stat-value">{{ nb_purchases }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Points distribués</span>
+        <span class="stat-value">{{ total_points_distributed }} pts</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">Recharges validées</span>
+        <span class="stat-value">{{ nb_recharges_validated }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="stat-label">En attente</span>
+        <span class="stat-value">{{ nb_recharges_pending }}</span>
+    </div>
+</div>
+
+<h3>🔗 Raccourcis</h3>
+<ul>
+    <li><a href="/admin/utilisateurs">👥 Gérer les utilisateurs</a></li>
+    <li><a href="/admin/playbacks">🎵 Voir tous les playbacks</a></li>
+    <li><a href="/admin/recharges">💳 Demandes de recharge ({{ nb_recharges_pending }} en attente)</a></li>
+    <li><a href="/admin/playback/new">➕ Créer un nouveau playback</a></li>
+    <li><a href="/admin/notifications">🔔 Notifications</a></li>
+    <li><a href="/admin/historique">📜 Historique des actions admin</a></li>
+</ul>
+
+<h3>🏆 Top 5 playbacks les plus achetés</h3>
+{% if top_playbacks %}
+<table>
+    <tr><th>Playback</th><th>Achats</th></tr>
+    {% for t in top_playbacks %}
+    <tr>
+        <td>{{ t.title }}</td>
+        <td>{{ t.nb }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Aucune donnée.</p>
+{% endif %}
+
+<h3>⭐ Top 5 gagnants de points (cascade)</h3>
+{% if top_gainers %}
+<table>
+    <tr><th>Utilisateur</th><th>Points gagnés</th></tr>
+    {% for t in top_gainers %}
+    <tr>
+        <td>{{ t.username }}</td>
+        <td>{{ t.total }} pts</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Aucune donnée.</p>
+{% endif %}
+
+<h3>🎨 Top 5 créateurs</h3>
+{% if top_creators %}
+<table>
+    <tr><th>Créateur</th><th>Playbacks créés</th></tr>
+    {% for t in top_creators %}
+    <tr>
+        <td>{{ t.username }}</td>
+        <td>{{ t.nb }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Aucune donnée.</p>
+{% endif %}
+
+<h3>💰 Dernières ventes</h3>
+{% if recent_purchases %}
+<table>
+    <tr><th>Date</th><th>Acheteur</th><th>Playback</th><th>Prix payé</th></tr>
+    {% for p in recent_purchases %}
+    <tr>
+        <td>{{ p.created_at.strftime("%d/%m/%Y %H:%M") if p.created_at else "—" }}</td>
+        <td>{{ p.user.username }}</td>
+        <td>{{ p.playback.title }}</td>
+        <td>{{ p.price_paid }} pts</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Aucune vente pour le moment.</p>
+{% endif %}
+
+<p><a href="/dashboard">Retour</a></p>
+{% endblock %}

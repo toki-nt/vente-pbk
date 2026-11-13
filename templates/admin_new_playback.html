@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Créer un nouveau playback</h2>
+<form method="post">
+    <p>
+        <label>Titre</label>
+        <input type="text" name="title" required>
+    </p>
+    <p>
+        <label>Créateur (client)</label>
+        <select name="creator_id" required>
+            <option value="">-- Choisir un utilisateur --</option>
+            {% for u in users %}
+                <option value="{{ u.id }}">{{ u.username }}</option>
+            {% endfor %}
+        </select>
+    </p>
+    <p>
+        <label>Prix de départ (Ar)</label>
+        <input type="number" name="price" value="9000" min="1000" step="1000" required>
+    </p>
+
+    <hr style="border-color:#333; margin:20px 0;">
+
+    <p>
+        <label>🎬 Lien démo (extrait public — YouTube ou Google Drive)</label>
+        <input type="url" name="demo_url" placeholder="https://www.youtube.com/watch?v=...">
+        <small style="color:#888; display:block; margin-top:4px;">
+            Visible par tous les visiteurs. Sert à donner envie d'acheter.
+        </small>
+    </p>
+    <p>
+        <label>🎧 Lien complet (fichier entier — YouTube ou Google Drive)</label>
+        <input type="url" name="full_url" placeholder="https://www.youtube.com/watch?v=...">
+        <small style="color:#888; display:block; margin-top:4px;">
+            Visible uniquement par les propriétaires du playback.
+        </small>
+    </p>
+
+    <p><button type="submit">Mettre en vente</button></p>
+</form>
+<p><a href="/admin">Retour</a></p>
+{% endblock %}

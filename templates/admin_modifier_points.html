@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>💰 Modifier les points de {{ u.username }}</h2>
+
+<div style="background:#181818; padding:20px; border-radius:12px; margin-bottom:20px;">
+    <p>Solde actuel : <strong style="color:#1db954;">{{ u.points }} pts</strong> ({{ u.points }} Ar)</p>
+    <p>Téléphone : {{ u.phone }}</p>
+    <p>Playbacks possédés : {{ u.purchases|length }}</p>
+</div>
+
+<form method="post">
+    <p>
+        <label>Montant à ajouter ou retirer (en pts)</label>
+        <input type="number" name="delta" required placeholder="Ex : +1000 pour créditer, -500 pour débiter">
+        <small style="color:#888; display:block; margin-top:4px;">
+            Positif (+) = créditer des points.<br>
+            Négatif (-) = retirer des points.
+        </small>
+    </p>
+    <p>
+        <label>Raison (facultatif, visible par le client)</label>
+        <input type="text" name="raison" placeholder="Ex : Correction erreur d'envoi Mobile Money">
+    </p>
+    <p>
+        <button type="submit">Confirmer la modification</button>
+        <a href="/admin/utilisateurs" style="margin-left:10px;">Annuler</a>
+    </p>
+</form>
+
+<p style="color:#b3b3b3; font-size:0.85rem; margin-top:20px;">
+    ⚠️ Une notification sera envoyée au client pour l'informer de la modification.
+</p>
+
+<p><a href="/admin/utilisateurs">Retour à la liste des utilisateurs</a></p>
+{% endblock %}

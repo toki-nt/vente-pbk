@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🎧 {{ pb.title }}</h2>
+<p>Créateur : {{ pb.creator.username }}</p>
+
+{% if pb.full_source == 'youtube' and pb.full_url %}
+    {% set yt_id = pb.full_url.split('v=')[-1].split('&')[0] if 'v=' in pb.full_url else pb.full_url.split('/')[-1].split('?')[0] %}
+    <div style="margin:20px 0;">
+        <iframe width="560" height="315" style="border:none; border-radius:8px; max-width:100%;"
+            src="https://www.youtube.com/embed/{{ yt_id }}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
+            allowfullscreen></iframe>
+    </div>
+    <p><a href="{{ pb.full_url }}" target="_blank">Ouvrir sur YouTube</a></p>
+
+{% elif pb.full_source == 'drive' and pb.full_url %}
+    {% set drive_id = pb.full_url.split('/d/')[-1].split('/')[0] if '/d/' in pb.full_url else pb.full_url.split('id=')[-1].split('&')[0] %}
+    <div style="margin:20px 0;">
+        <iframe width="560" height="100" style="border:none; border-radius:8px; max-width:100%;"
+            src="https://drive.google.com/file/d/{{ drive_id }}/preview"
+            allow="autoplay"></iframe>
+    </div>
+    <p>
+        <a href="https://drive.google.com/uc?export=download&id={{ drive_id }}" target="_blank">
+            ⬇ Télécharger le fichier
+        </a>
+    </p>
+
+{% else %}
+    <p><em>Aucun fichier complet disponible pour ce playback.</em></p>
+{% endif %}
+
+<p><a href="/mes-playbacks">Retour à mes playbacks</a></p>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Mes gains de points</h2>
+<p>Solde actuel : <strong>{{ current_user.points }} pts</strong> ({{ current_user.points }} Ar)</p>
+<p>Total gagné grâce à la cascade : <strong>{{ total }} pts</strong> ({{ total }} Ar)</p>
+
+{% if gains %}
+<h3>Historique</h3>
+<table>
+    <tr><th>Date</th><th>Playback</th><th>Acheteur</th><th>Points gagnés</th></tr>
+    {% for g in gains %}
+    <tr>
+        <td>{{ g.created_at.strftime("%d/%m/%Y %H:%M") if g.created_at else "—" }}</td>
+        <td>{{ g.playback.title if g.playback else "—" }}</td>
+        <td>{{ g.buyer.username if g.buyer else "—" }}</td>
+        <td>+{{ g.amount }} pts ({{ g.amount }} Ar)</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Vous n'avez encore rien gagné. Vos gains apparaîtront ici quand quelqu'un achètera un playback que vous possédez.</p>
+{% endif %}
+
+<p><a href="/dashboard">Retour au tableau de bord</a></p>
+{% endblock %}

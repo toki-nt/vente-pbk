@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>PLAYBACK.MG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <h1>🎵 PLAYBACK.MG</h1>
+            <nav>
+                <a href="/catalogue">Catalogue</a>
+            </nav>
+        </div>
+
+        <div class="header-right">
+            {% if current_user.is_authenticated %}
+                <div class="user-menu">
+                    <span class="user-name" tabindex="0">
+                        👤 {{ current_user.username }}
+                        <span class="user-points">💰 {{ current_user.points }} pts</span>
+                        <span class="user-playbacks">🎵 {{ current_user.purchases|length }}</span>
+                        {% if unread_notifications > 0 %}
+                            <span class="notif-badge">🔔 {{ unread_notifications }}</span>
+                        {% endif %}
+                        <span class="arrow">▾</span>
+                    </span>
+                    <div class="user-dropdown">
+                        <div class="user-summary">
+                            <strong>{{ current_user.username }}</strong><br>
+                            <small>Solde : {{ current_user.points }} pts ({{ current_user.points }} Ar)</small><br>
+                            <small>Playbacks : {{ current_user.purchases|length }}</small>
+                        </div>
+                        <hr style="border-color:#333; margin:5px 0;">
+                        <a href="/dashboard">Mon profil</a>
+                        <a href="/mes-playbacks">Mes playbacks</a>
+                        <a href="/mes-gains">Mes gains</a>
+                        <a href="/recharge">Recharger</a>
+                        <a href="/mes-notifications">
+                            🔔 Notifications
+                            {% if unread_notifications > 0 %}
+                                <span class="notif-badge-inline">{{ unread_notifications }}</span>
+                            {% endif %}
+                        </a>
+                        {% if current_user.is_admin %}
+                            <a href="/admin">👑 Administration</a>
+                        {% endif %}
+                        <hr style="border-color:#333; margin:5px 0;">
+                        <a href="/logout">Déconnexion</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="auth-links">
+                    <a href="/login">Connexion</a>
+                    <a href="/register" class="btn-register">Inscription</a>
+                </div>
+            {% endif %}
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="flash">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <main>{% block content %}{% endblock %}</main>
+
+    <footer><p>© 2026 PLAYBACK.MG</p></footer>
+
+</body>
+</html>

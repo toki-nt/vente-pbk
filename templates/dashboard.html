@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bienvenue {{ current_user.username }}</h2>
+<p>Mes points : <strong>{{ current_user.points }} pts</strong> ({{ current_user.points }} Ar)</p>
+
+<h3>Navigation</h3>
+<ul>
+    <li><a href="/catalogue">Catalogue</a></li>
+    <li><a href="/mes-playbacks">Mes playbacks</a></li>
+    <li><a href="/mes-gains">Mes gains de points</a></li>
+    <li><a href="/recharge">Recharger mes points</a></li>
+    {% if current_user.is_admin %}
+        <li><a href="/admin/recharges">Demandes de recharge (admin)</a></li>
+        <li><a href="/admin/playback/new">Créer un playback (admin)</a></li>
+    {% endif %}
+</ul>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="/admin">📊 Tableau de bord</a>
+    <a href="/admin/utilisateurs" class="active">👥 Utilisateurs</a>
+    <a href="/admin/playbacks">🎵 Playbacks</a>
+    <a href="/admin/recharges">💳 Recharges</a>
+    <a href="/admin/playback/new">➕ Nouveau playback</a>
+    <a href="/admin/historique">📜 Historique</a>
+</div>
+
+<h2>👥 Utilisateurs</h2>
+
+{% if nb_blocked > 0 %}
+<p style="color:#e22134;">⚠️ {{ nb_blocked }} utilisateur(s) bloqué(s)</p>
+{% endif %}
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Pseudo</th>
+        <th>Téléphone</th>
+        <th>Points</th>
+        <th>Playbacks</th>
+        <th>Admin</th>
+        <th>Statut</th>
+        <th>Actions</th>
+    </tr>
+    {% for u in users %}
+    <tr style="{% if u.is_blocked %}opacity:0.5;{% endif %}">
+        <td>{{ u.id }}</td>
+        <td>
+            {{ u.username }}
+            {% if u.is_blocked %}<span style="color:#e22134;"> 🚫</span>{% endif %}
+        </td>
+        <td>{{ u.phone }}</td>
+        <td>{{ u.points }} pts</td>
+        <td>{{ u.purchases|length }}</td>
+        <td>{% if u.is_admin %}✅{% else %}❌{% endif %}</td>
+        <td>
+            {% if u.is_blocked %}
+                <span style="color:#e22134;">🚫 Bloqué</span>
+            {% else %}
+                <span style="color:#1db954;">✅ Actif</span>
+            {% endif %}
+        </td>
+        <td>
+            <a href="/admin/utilisateurs/{{ u.id }}/modifier-points" style="margin-right:8px;">💰 Points</a>
+
+            {% if u.id != current_user.id %}
+                {% if u.is_admin %}
+                    <form method="post" action="/admin/utilisateurs/{{ u.id }}/retrograder" style="display:inline; background:none; padding:0;">
+                        <button type="submit">⬇ Retirer admin</button>
+                    </form>
+                {% else %}
+                    <form method="post" action="/admin/utilisateurs/{{ u.id }}/promouvoir" style="display:inline; background:none; padding:0;">
+                        <button type="submit">⬆ Promouvoir</button>
+                    </form>
+
+                    {% if u.is_blocked %}
+                        <form method="post" action="/admin/utilisateurs/{{ u.id }}/debloquer" style="display:inline; background:none; padding:0;">
+                            <button type="submit" style="background:#1db954;">🔓 Débloquer</button>
+                        </form>
+                    {% else %}
+                        <form method="post" action="/admin/utilisateurs/{{ u.id }}/bloquer" style="display:inline; background:none; padding:0;">
+                            <button type="submit" style="background:#e22134;">🚫 Bloquer</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <em>(vous)</em>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p><a href="/admin">Retour</a></p>
+{% endblock %}

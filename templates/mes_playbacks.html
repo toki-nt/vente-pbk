@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Mes playbacks</h2>
+<p>Solde : <strong>{{ current_user.points }} pts</strong> ({{ current_user.points }} Ar)</p>
+
+{% if purchases %}
+<ul class="playlist">
+    {% for p in purchases %}
+    <li class="playlist-item">
+        <div class="playlist-cover">🎵</div>
+        <div class="playlist-info">
+            <span class="playlist-title">{{ p.playback.title }}</span>
+            <span class="playlist-artist">{{ p.playback.creator.username if p.playback.creator else "Inconnu" }}</span>
+        </div>
+        <div class="playlist-meta">
+            <span class="playlist-date">Acheté le {{ p.created_at.strftime("%d/%m/%Y") if p.created_at else "—" }}</span>
+        </div>
+        <div class="playlist-action"><a href="/ecoute/{{ p.playback.id }}">Écouter</a></div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Vous n'avez pas encore acheté de playback.</p>
+<p><a href="/catalogue">Voir le catalogue</a></p>
+{% endif %}
+
+<p><a href="/dashboard">Retour au tableau de bord</a></p>
+{% endblock %}

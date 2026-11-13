@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🎵 Tous les playbacks</h2>
+
+{% for pb in playbacks %}
+<div style="background:#181818; padding:15px; margin-bottom:15px; border-radius:10px;">
+    <h3>{{ pb.title }} <span style="color:#888; font-size:0.9rem;">(par {{ pb.creator.username if pb.creator else "?" }})</span></h3>
+    <p>
+        <strong>Prix :</strong> {{ pb.display_price() }} |
+        <strong>Propriétaires :</strong> {{ pb.owner_count }} |
+        <strong>Statut :</strong> {% if pb.is_free %}🟢 Gratuit{% else %}🔴 En vente{% endif %}
+    </p>
+
+    <p style="color:#b3b3b3;">
+        🎬 <strong>Démo :</strong>
+        {% if pb.demo_url %}<a href="{{ pb.demo_url }}" target="_blank">{{ pb.demo_source }}</a>
+        {% else %}<span style="color:#e22134;">❌ Aucune démo</span>{% endif %}
+        <br>
+        🎧 <strong>Complet :</strong>
+        {% if pb.full_url %}<a href="{{ pb.full_url }}" target="_blank">{{ pb.full_source }}</a>
+        {% else %}<span style="color:#e22134;">❌ Aucun fichier complet</span>{% endif %}
+    </p>
+
+    <h4 style="color:#b3b3b3;">Chaîne des propriétaires</h4>
+    <table>
+        <tr><th>Position</th><th>Propriétaire</th><th>Prix payé</th><th>Date</th></tr>
+        {% for p in pb.purchases|sort(attribute='position') %}
+        <tr>
+            <td>{{ p.position }}</td>
+            <td>{{ p.user.username }}</td>
+            <td>{% if p.price_paid == 0 and p.position == 1 %}Créateur{% else %}{{ p.price_paid }} pts{% endif %}</td>
+            <td>{{ p.created_at.strftime("%d/%m/%Y") if p.created_at else "—" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endfor %}
+
+<p><a href="/admin">Retour</a></p>
+{% endblock %}

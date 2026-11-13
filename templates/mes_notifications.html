@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>🔔 Mes notifications</h2>
+
+{% if notifications %}
+<form method="post" action="/mes-notifications/tout-lire" style="display:inline; background:none; padding:0; margin-bottom:15px;">
+    <button type="submit">Tout marquer comme lu</button>
+</form>
+
+<table>
+    <tr><th>Date</th><th>Type</th><th>Message</th><th>Action</th></tr>
+    {% for n in notifications %}
+    <tr style="{% if not n.is_read %}background:rgba(29,185,84,0.08);{% endif %}">
+        <td>{{ n.created_at.strftime("%d/%m/%Y %H:%M") if n.created_at else "—" }}</td>
+        <td>
+            {% if n.type == 'purchase_success' %}🛒 Achat
+            {% elif n.type == 'points_gained' %}⭐ Gain de points
+            {% elif n.type == 'recharge_validated' %}✅ Recharge validée
+            {% elif n.type == 'recharge_refused' %}❌ Recharge refusée
+            {% elif n.type == 'playback_created' %}🎵 Playback créé
+            {% elif n.type == 'points_manual' %}💰 Ajustement admin
+            {% else %}{{ n.type }}{% endif %}
+        </td>
+        <td>{{ n.message }}</td>
+        <td>
+            {% if not n.is_read %}
+                <form method="post" action="/mes-notifications/{{ n.id }}/lire" style="display:inline; background:none; padding:0;">
+                    <button type="submit">👁 Voir</button>
+                </form>
+            {% else %}
+                <span style="color:#666;">Lu</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Aucune notification.</p>
+{% endif %}
+
+<p><a href="/dashboard">Retour</a></p>
+{% endblock %}

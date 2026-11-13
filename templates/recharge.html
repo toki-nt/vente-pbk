@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Recharger mes points</h2>
+<p>Solde actuel : <strong>{{ current_user.points }} pts</strong> ({{ current_user.points }} Ar)</p>
+<p>1000 Ariary = 1000 points</p>
+
+{% if has_pending %}
+    <div class="flash" style="background:#f39c12;">
+        ⏳ Vous avez déjà une demande de recharge en attente. Attendez sa validation avant d'en créer une nouvelle.
+    </div>
+{% else %}
+    <h3>Comment recharger ?</h3>
+    <ol>
+        <li>Choisissez un montant.</li>
+        <li>Envoyez ce montant par Mobile Money à l'administrateur.</li>
+        <li>Envoyez la preuve de paiement à l'administrateur.</li>
+        <li>L'administrateur valide et crédite vos points.</li>
+    </ol>
+
+    <p><strong>Numéro Mobile Money de l'administrateur : 034 XX XXX XX</strong></p>
+
+    <form method="post">
+        <p>
+            <label>Montant à recharger (Ar)</label>
+            <input type="number" name="amount" min="1000" step="1000" required>
+        </p>
+        <p>
+            <label>Numéro Mobile Money utilisé</label>
+            <input type="tel" name="phone_used" required>
+        </p>
+        <p><button type="submit">Envoyer ma demande</button></p>
+    </form>
+{% endif %}
+
+<h3>Mes demandes</h3>
+{% if requests %}
+<table>
+    <tr><th>Date</th><th>Montant</th><th>Numéro utilisé</th><th>Statut</th></tr>
+    {% for r in requests %}
+    <tr>
+        <td>{{ r.created_at.strftime("%d/%m/%Y %H:%M") if r.created_at else "—" }}</td>
+        <td>{{ r.amount }} pts ({{ r.amount }} Ar)</td>
+        <td>{{ r.phone_used }}</td>
+        <td>
+            {% if r.status == 'pending' %}⏳ En attente
+            {% elif r.status == 'validated' %}✅ Validée
+            {% elif r.status == 'refused' %}❌ Refusée
+            {% else %}{{ r.status }}{% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Aucune demande pour le moment.</p>
+{% endif %}
+
+<p><a href="/dashboard">Retour au tableau de bord</a></p>
+{% endblock %}

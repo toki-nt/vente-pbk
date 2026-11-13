@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Acheter : {{ pb.title }}</h2>
+<ul>
+    <li>Créateur : {{ pb.creator.username }}</li>
+    <li>Prix : {{ pb.display_price() }}</li>
+    <li>Votre solde : {{ current_user.points }} pts ({{ current_user.points }} Ar)</li>
+</ul>
+<form method="post" action="/achat/{{ pb.id }}/confirmer">
+    <button type="submit">Confirmer l'achat</button>
+</form>
+<p><a href="/catalogue">Annuler</a></p>
+{% endblock %}
