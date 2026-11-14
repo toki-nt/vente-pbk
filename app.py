@@ -1,11 +1,12 @@
 import re
+import os 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'c9cfd3a3060ab29d59e28d3268ea991e9c6e5b2ca9a83085016e352e2adb4084'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'c9cfd3a3060ab29d59e28d3268ea991e9c6e5b2ca9a83085016e352e2adb4084')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///playback.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -68,6 +69,7 @@ class Playback(db.Model):
     price = db.Column(db.Integer, nullable=False, default=9000)
     owner_count = db.Column(db.Integer, nullable=False, default=1)
     is_free = db.Column(db.Boolean, default=False)
+    is_private = db.Column(db.Boolean, default=False, nullable=False)  # 🆕
     creator_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     demo_url = db.Column(db.String(500), nullable=True)
@@ -76,10 +78,11 @@ class Playback(db.Model):
     full_source = db.Column(db.String(20), nullable=True)
 
     def display_price(self):
+        if self.is_private:
+            return "30 000 Ar (privé)"
         if self.is_free:
             return "0 Ar (0 pts) - Gratuit"
         return f"{self.price:,} Ar ({self.price:,} pts)".replace(",", " ")
-
 
 class Purchase(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -161,24 +164,60 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form.get('username')
-        phone = request.form.get('phone')
-        password = request.form.get('password')
+        username = request.form.get('username', '').strip()
+        phone = request.form.get('phone', '').strip()
+        password = request.form.get('password', '')
+        password_confirm = request.form.get('password_confirm', '')
+        accept_cgu = request.form.get('accept_cgu')
 
-        if User.query.filter_by(username=username).first():
-            flash('Ce pseudo est déjà pris')
+        # 1. CGU
+        if not accept_cgu:
+            flash('Vous devez accepter les conditions d\'utilisation pour vous inscrire.')
             return redirect(url_for('register'))
 
+        # 2. Pseudo ≥ 3 caractères
+        if len(username) < 3:
+            flash('Le pseudo doit contenir au moins 3 caractères.')
+            return redirect(url_for('register'))
+
+        # 3. Mot de passe ≥ 4 caractères
+        if len(password) < 4:
+            flash('Le mot de passe doit contenir au moins 4 caractères.')
+            return redirect(url_for('register'))
+
+        # 4. Mots de passe identiques
+        if password != password_confirm:
+            flash('Les deux mots de passe ne correspondent pas.')
+            return redirect(url_for('register'))
+
+        # 5. Téléphone valide
+        if len(phone) < 10 or not phone.replace(' ', '').replace('+', '').replace('-', '').isdigit():
+            flash('Le numéro de téléphone doit contenir au moins 10 chiffres.')
+            return redirect(url_for('register'))
+
+        # 6. Pseudo unique
+        if User.query.filter_by(username=username).first():
+            flash('Ce pseudo est déjà pris. Choisissez-en un autre.')
+            return redirect(url_for('register'))
+
+        # 7. Téléphone unique
+        if User.query.filter_by(phone=phone).first():
+            flash('Ce numéro de téléphone est déjà utilisé. Si vous ne vous êtes pas inscrit avec ce numéro, contactez l\'administrateur pour une vérification directe.')
+            return redirect(url_for('register'))
+
+        # 8. Créer l'utilisateur
         new_user = User(username=username, phone=phone)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Inscription réussie, veuillez vous connecter')
-        return redirect(url_for('login'))
+        # 🆕 Connexion automatique
+        login_user(new_user)
+
+        flash(f'Bienvenue {new_user.username} ! Votre compte a été créé.')
+        return redirect(url_for('catalogue'))
 
     return render_template('register.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -192,11 +231,11 @@ def login():
                 flash('Votre compte a été bloqué. Contactez l\'administrateur.')
                 return redirect(url_for('login'))
             login_user(user)
-            return redirect(url_for('dashboard'))
-        flash('Pseudo ou mot de passe incorrect')
+            flash(f'Bienvenue {user.username} !')
+            return redirect(url_for('catalogue'))  # 🆕 catalogue au lieu de dashboard
+        flash('⚠️ Pseudo ou mot de passe incorrect')
 
     return render_template('login.html')
-
 
 @app.route('/dashboard')
 @login_required
@@ -210,9 +249,23 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-
+@app.route('/')
 @app.route('/catalogue')
 def catalogue():
+    q = request.args.get('q', '').strip()
+
+    if q:
+        # Recherche sur le titre OU le créateur
+        playbacks = Playback.query.join(User, Playback.creator_id == User.id, isouter=True).filter(
+            db.or_(
+                Playback.title.ilike(f'%{q}%'),
+                User.username.ilike(f'%{q}%')
+            )
+        ).order_by(Playback.id.desc()).all()
+    else:
+        playbacks = Playback.query.order_by(Playback.id.desc()).all()
+
+    return render_template('catalogue.html', playbacks=playbacks, q=q)
     playbacks = Playback.query.order_by(Playback.id.desc()).all()
     return render_template('catalogue.html', playbacks=playbacks)
 
@@ -223,6 +276,10 @@ def achat(playback_id):
     pb = db.session.get(Playback, playback_id)
     if not pb:
         return render_template('404.html'), 404
+    # 🆕 Playback privé : bloquer l'achat 
+    if pb.is_private: 
+        flash('Ce playback est privé et n\'est pas disponible à l\'achat.') 
+        return redirect(url_for('catalogue'))
     if pb.is_free:
         flash('Ce playback est déjà gratuit.')
         return redirect(url_for('catalogue'))
@@ -243,6 +300,10 @@ def confirmer_achat(playback_id):
 
         if not pb:
             return render_template('404.html'), 404
+        # 🆕 Playback privé : bloquer l'achat 
+        if pb.is_private: 
+            flash('Ce playback est privé et n\'est pas disponible à l\'achat.') 
+            return redirect(url_for('catalogue'))
         if pb.is_free:
             flash('Ce playback est déjà gratuit.')
             return redirect(url_for('catalogue'))
@@ -339,6 +400,13 @@ def ecoute(playback_id):
     pb = db.session.get(Playback, playback_id)
     if not pb:
         return render_template('404.html'), 404
+
+        # 🆕 Playback privé : seul le créateur peut écouter 
+    if pb.is_private: 
+        if pb.creator_id != current_user.id: 
+            flash('Ce playback est privé. Seul son créateur peut y accéder.') 
+            return redirect(url_for('catalogue')) 
+        return render_template('ecoute.html', pb=pb)
 
     if pb.is_free:
         return render_template('ecoute.html', pb=pb)
@@ -763,6 +831,90 @@ def new_playback():
         demo_url = (request.form.get('demo_url') or '').strip()
         full_url = (request.form.get('full_url') or '').strip()
 
+        # 🆕 LIRE is_private
+        is_private = request.form.get('is_private') == 'on'
+
+        creator = db.session.get(User, creator_id)
+        if not creator:
+            flash('Utilisateur introuvable')
+            return redirect(url_for('new_playback'))
+
+        if creator.is_blocked:
+            flash(f'{creator.username} est bloqué. Impossible de créer un playback pour lui.')
+            return redirect(url_for('new_playback'))
+
+        demo_source = None
+        if demo_url:
+            demo_source = detect_source(demo_url)
+            if demo_source is None:
+                flash('Lien démo non reconnu. Utilisez YouTube ou Google Drive.')
+                return redirect(url_for('new_playback'))
+
+        full_source = None
+        if full_url:
+            full_source = detect_source(full_url)
+            if full_source is None:
+                flash('Lien complet non reconnu. Utilisez YouTube ou Google Drive.')
+                return redirect(url_for('new_playback'))
+
+        # 🆕 Si privé, prix forcé à 30000
+        if is_private:
+            price = 30000
+
+        pb = Playback(
+            title=title,
+            creator_id=creator.id,
+            price=price,
+            owner_count=1,
+            is_free=False,
+            is_private=is_private,  # 🆕 ENREGISTRER is_private
+            demo_url=demo_url or None,
+            demo_source=demo_source,
+            full_url=full_url or None,
+            full_source=full_source
+        )
+        db.session.add(pb)
+        db.session.flush()
+
+        db.session.add(Purchase(user_id=creator.id, playback_id=pb.id, position=1, price_paid=0))
+
+        if is_private:
+            msg = f'Votre playback privé "{pb.title}" a été créé. Prix : 30 000 Ar. Vous seul avez accès au fichier complet.'
+        else:
+            msg = f'Votre playback "{pb.title}" a été mis en vente à {pb.price:,} pts.'.replace(',', ' ')
+
+        db.session.add(Notification(
+            type='playback_created',
+            message=msg,
+            user_id=creator.id,
+            link=f'/ecoute/{pb.id}'
+        ))
+
+        db.session.add(AdminAction(
+            admin_id=current_user.id,
+            action='creer_playback',
+            target_user_id=creator.id,
+            details=f'Playback "{pb.title}" créé pour {creator.username} à {pb.price} pts{" (privé)" if is_private else ""}'
+        ))
+
+        db.session.commit()
+
+        flash('Playback créé avec succès')
+        return redirect(url_for('catalogue'))
+
+    return render_template('admin_new_playback.html', users=users)
+    if not current_user.is_admin:
+        return render_template('403.html'), 403
+
+    users = User.query.order_by(User.username).all()
+
+    if request.method == 'POST':
+        title = request.form.get('title')
+        creator_id = int(request.form.get('creator_id'))
+        price = int(request.form.get('price'))
+        demo_url = (request.form.get('demo_url') or '').strip()
+        full_url = (request.form.get('full_url') or '').strip()
+
         creator = db.session.get(User, creator_id)
         if not creator:
             flash('Utilisateur introuvable')
@@ -823,6 +975,152 @@ def new_playback():
 
     return render_template('admin_new_playback.html', users=users)
 
+@app.route('/admin/playback/<int:playback_id>/modifier', methods=['GET', 'POST'])
+@login_required
+def modifier_playback(playback_id):
+    if not current_user.is_admin:
+        return render_template('403.html'), 403
+
+    pb = db.session.get(Playback, playback_id)
+    if not pb:
+        return render_template('404.html'), 404
+
+    if request.method == 'POST':
+        try:
+            title = request.form.get('title', '').strip()
+            price = int(request.form.get('price'))
+            demo_url = (request.form.get('demo_url') or '').strip()
+            full_url = (request.form.get('full_url') or '').strip()
+            is_private = request.form.get('is_private') == 'on'
+
+            if not title:
+                flash('Le titre est obligatoire.')
+                return redirect(url_for('modifier_playback', playback_id=pb.id))
+
+            # Détecter les sources
+            demo_source = None
+            if demo_url:
+                demo_source = detect_source(demo_url)
+                if demo_source is None:
+                    flash('Lien démo non reconnu. Utilisez YouTube ou Google Drive.')
+                    return redirect(url_for('modifier_playback', playback_id=pb.id))
+
+            full_source = None
+            if full_url:
+                full_source = detect_source(full_url)
+                if full_source is None:
+                    flash('Lien complet non reconnu. Utilisez YouTube ou Google Drive.')
+                    return redirect(url_for('modifier_playback', playback_id=pb.id))
+
+            # Prix forcé si privé
+            if is_private:
+                price = 30000
+
+            # Détecter les changements pour l'historique
+            changes = []
+            if pb.title != title:
+                changes.append(f'titre : "{pb.title}" → "{title}"')
+            if pb.price != price:
+                changes.append(f'prix : {pb.price} → {price}')
+            if pb.demo_url != (demo_url or None):
+                changes.append('lien démo modifié')
+            if pb.full_url != (full_url or None):
+                changes.append('lien complet modifié')
+            if pb.is_private != is_private:
+                changes.append(f'privé : {pb.is_private} → {is_private}')
+
+            # Mettre à jour
+            pb.title = title
+            pb.price = price
+            pb.demo_url = demo_url or None
+            pb.demo_source = demo_source
+            pb.full_url = full_url or None
+            pb.full_source = full_source
+            pb.is_private = is_private
+
+            # Historique
+            db.session.add(AdminAction(
+                admin_id=current_user.id,
+                action='modifier_playback',
+                target_user_id=pb.creator_id,
+                details=f'Playback "{pb.title}" (ID {pb.id}) modifié : {", ".join(changes) or "aucun changement"}'
+            ))
+
+            # Notification au créateur (si modifié par admin)
+            if changes:
+                db.session.add(Notification(
+                    type='playback_modified',
+                    message=f'Votre playback "{pb.title}" a été modifié par l\'administrateur : {", ".join(changes)}',
+                    user_id=pb.creator_id,
+                    link=f'/ecoute/{pb.id}'
+                ))
+
+            db.session.commit()
+
+            if changes:
+                flash(f'Playback "{pb.title}" modifié : {", ".join(changes)}.')
+            else:
+                flash('Aucune modification détectée.')
+            return redirect(url_for('admin_playbacks'))
+
+        except Exception as e:
+            db.session.rollback()
+            return render_template('500.html'), 500
+
+    return render_template('admin_modifier_playback.html', pb=pb)
+
+@app.route('/cgu')
+def cgu():
+    return render_template('cgu.html')
+
+
+@app.route('/confidentialite')
+def confidentialite():
+    return render_template('confidentialite.html')
+
+@app.route('/support')
+def support():
+    return render_template('support.html')
+
+@app.route('/admin/utilisateurs/<int:user_id>/modifier-telephone', methods=['GET', 'POST'])
+@login_required
+def modifier_telephone(user_id):
+    if not current_user.is_admin:
+        return render_template('403.html'), 403
+
+    u = db.session.get(User, user_id)
+    if not u:
+        return render_template('404.html'), 404
+
+    if request.method == 'POST':
+        nouveau_tel = request.form.get('telephone', '').strip()
+
+        # Vérifications
+        if len(nouveau_tel) < 10 or not nouveau_tel.replace(' ', '').replace('+', '').replace('-', '').isdigit():
+            flash('Le numéro doit contenir au moins 10 chiffres.')
+            return redirect(url_for('modifier_telephone', user_id=u.id))
+
+        # Vérifier que le nouveau numéro n'est pas déjà pris par un autre
+        existing = User.query.filter(User.phone == nouveau_tel, User.id != u.id).first()
+        if existing:
+            flash(f'Ce numéro est déjà utilisé par {existing.username}.')
+            return redirect(url_for('modifier_telephone', user_id=u.id))
+
+        ancien_tel = u.phone
+        u.phone = nouveau_tel
+
+        db.session.add(AdminAction(
+            admin_id=current_user.id,
+            action='modifier_telephone',
+            target_user_id=u.id,
+            details=f'Téléphone : {ancien_tel} → {nouveau_tel}'
+        ))
+        db.session.commit()
+
+        flash(f'Téléphone de {u.username} modifié : {ancien_tel} → {nouveau_tel}.')
+        return redirect(url_for('admin_utilisateurs'))
+
+    return render_template('admin_modifier_telephone.html', u=u)
 
 # --- Gestionnaires d'erreurs ---
 @app.errorhandler(404)

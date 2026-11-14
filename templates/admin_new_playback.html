@@ -1,11 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<div class="admin-tabs">
+    <a href="/admin">📊 Tableau de bord</a>
+    <a href="/admin/utilisateurs">👥 Utilisateurs</a>
+    <a href="/admin/playbacks">🎵 Playbacks</a>
+    <a href="/admin/recharges">💳 Recharges</a>
+    <a href="/admin/playback/new" class="active">➕ Nouveau playback</a>
+    <a href="/admin/historique">📜 Historique</a>
+</div>
+
 <h2>Créer un nouveau playback</h2>
+
 <form method="post">
     <p>
         <label>Titre</label>
-        <input type="text" name="title" required>
+        <input type="text" name="title" required placeholder="Ex : Hira Malala">
     </p>
     <p>
         <label>Créateur (client)</label>
@@ -26,19 +37,34 @@
     <p>
         <label>🎬 Lien démo (extrait public — YouTube ou Google Drive)</label>
         <input type="url" name="demo_url" placeholder="https://www.youtube.com/watch?v=...">
-        <small style="color:#888; display:block; margin-top:4px;">
+        <small style="color:#888;display:block;margin-top:4px;">
             Visible par tous les visiteurs. Sert à donner envie d'acheter.
         </small>
     </p>
     <p>
         <label>🎧 Lien complet (fichier entier — YouTube ou Google Drive)</label>
         <input type="url" name="full_url" placeholder="https://www.youtube.com/watch?v=...">
-        <small style="color:#888; display:block; margin-top:4px;">
+        <small style="color:#888;display:block;margin-top:4px;">
             Visible uniquement par les propriétaires du playback.
         </small>
     </p>
 
+    <hr style="border-color:#333; margin:20px 0;">
+
+    {# CASE À COCHER PLAYBACK PRIVÉ — À L'INTÉRIEUR DU FORMULAIRE #}
+    <p style="display:flex;align-items:flex-start;gap:10px;background:#282828;padding:15px;border-radius:8px;margin:15px 0;">
+        <input type="checkbox" name="is_private" id="is_private" value="on" style="width:auto;margin-top:4px;">
+        <label for="is_private" style="cursor:pointer;font-size:0.9rem;">
+            <strong>🔒 Playback privé (non achetable)</strong><br>
+            <small style="color:#b3b3b3;display:block;margin-top:4px;">
+                Prix fixe : <strong style="color:#1db954;">30 000 Ar</strong>. Non achetable via des points.
+                Seul le créateur aura accès au fichier complet.<br>
+            </small>
+        </label>
+    </p>
+
     <p><button type="submit">Mettre en vente</button></p>
 </form>
+
 <p><a href="/admin">Retour</a></p>
 {% endblock %}

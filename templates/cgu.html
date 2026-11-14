@@ -1,0 +1,126 @@
+{% extends "base.html" %} {% block content %}
+<h2>📜 Conditions Générales d'Utilisation</h2>
+
+<p>
+  <em
+    >Dernière mise à jour : {{ "now"|date("%d/%m/%Y") if false else "14/11/2026"
+    }}</em
+  >
+</p>
+
+<h3>1. Objet</h3>
+<p>
+  PLAYBACK.MG est une plateforme de vente de playbacks musicaux. Elle permet aux
+  utilisateurs d'acheter des playbacks, de gagner des points et d'accéder à des
+  fichiers audio complets.
+</p>
+
+<h3>2. Inscription</h3>
+<p>
+  Pour utiliser la plateforme, vous devez créer un compte en fournissant un
+  pseudo, un numéro de téléphone et un mot de passe. Vous êtes responsable de la
+  confidentialité de vos identifiants.
+</p>
+<p><strong>Règles d'inscription :</strong></p>
+<ul>
+  <li>Le <strong>pseudo</strong> doit contenir au moins 3 caractères.</li>
+  <li>Le <strong>mot de passe</strong> doit contenir au moins 4 caractères.</li>
+  <li>
+    Le <strong>numéro de téléphone</strong> doit être unique (un seul compte par
+    numéro).
+  </li>
+  <li>
+    Le numéro de téléphone doit être celui que vous utilisez pour Mobile Money.
+  </li>
+</ul>
+<p>
+  <strong style="color: #e22134">⚠️ Récupération de compte impossible :</strong>
+</p>
+<p>
+  La récupération de compte n'est pas possible. Vous devez conserver vos
+  identifiants (pseudo et mot de passe) en lieu sûr. En cas d'oubli, la seule
+  solution est de <strong>recréer un compte</strong>, en
+  <strong>perdant tous vos points et playbacks</strong>.
+</p>
+
+<h3>3. Système de points</h3>
+<ul>
+  <li><strong>1 point = 1 Ariary.</strong></li>
+  <li>Les points s'achètent par Mobile Money auprès de l'administrateur.</li>
+  <li>
+    Les points gagnés (cascade) servent uniquement à acheter d'autres playbacks
+    sur la plateforme.
+  </li>
+  <li>
+    <strong
+      >Les points ne sont PAS convertibles en argent réel et ne peuvent pas être
+      retirés.</strong
+    >
+  </li>
+</ul>
+
+<h3>4. Achats</h3>
+<ul>
+  <li>
+    Le prix des playbacks est dégressif : il baisse de 1 000 Ar à chaque nouvel
+    acheteur.
+  </li>
+  <li>Un utilisateur ne peut acheter qu'une seule fois le même playback.</li>
+  <li>Un utilisateur ne peut pas acheter son propre playback.</li>
+  <li>Quand le prix atteint 0 Ar, le playback devient gratuit pour tous.</li>
+</ul>
+<p><strong>Playbacks privés :</strong></p>
+<p>
+  Certains playbacks sont marqués comme <strong>privés</strong>. Ils sont
+  <strong>exclusifs à leur créateur</strong> et ne sont
+  <strong>pas disponibles à l'achat</strong> via des points. Leur prix est fixé
+  à <strong>30 000 Ariary</strong> (frais de création). Seul le créateur a accès
+  au fichier complet. La démo reste visible publiquement à titre de publicité.
+</p>
+
+<h3>5. Cascade de points</h3>
+<p>
+  À chaque nouvel achat d'un playback, tous les propriétaires précédents gagnent
+  1 000 points. Ces points s'ajoutent à leur solde.
+</p>
+
+<h3>6. Contenus</h3>
+<p>
+  Les playbacks sont créés par l'administrateur pour le compte des clients. Les
+  liens audio (YouTube, Google Drive) sont fournis par les créateurs.
+  PLAYBACK.MG ne peut être tenu responsable du contenu des fichiers audio.
+</p>
+
+<h3>7. Comportement</h3>
+<p>L'utilisateur s'engage à ne pas :</p>
+<ul>
+  <li>Tenter de contourner le système de points ou de paiement.</li>
+  <li>Partager les liens audio avec des personnes non autorisées.</li>
+  <li>Utiliser la plateforme à des fins illégales.</li>
+</ul>
+<p>
+  Tout manquement peut entraîner le <strong>blocage du compte</strong> sans
+  remboursement.
+</p>
+
+<h3>8. Responsabilité</h3>
+<p>
+  PLAYBACK.MG met tout en œuvre pour assurer la disponibilité du service, mais
+  ne peut garantir une disponibilité permanente. Le service est fourni « en
+  l'état ».
+</p>
+
+<h3>9. Modification des CGU</h3>
+<p>
+  PLAYBACK.MG se réserve le droit de modifier les présentes CGU à tout moment.
+  Les utilisateurs seront informés par notification sur la plateforme.
+</p>
+
+<h3>10. Contact</h3>
+<p>
+  Pour toute question, contactez l'administrateur via le numéro Mobile Money
+  affiché sur la page de recharge.
+</p>
+
+<p style="margin-top: 30px"><a href="/">← Retour à l'accueil</a></p>
+{% endblock %}

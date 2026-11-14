@@ -3,32 +3,39 @@
 {% block content %}
 <h2>👑 Administration PLAYBACK.MG</h2>
 
+
 <h3>📊 Statistiques globales</h3>
 <div class="stats-grid">
-    <div class="stat-card">
+
+    <a href="/admin/utilisateurs" class="stat-card">
         <span class="stat-label">Utilisateurs</span>
         <span class="stat-value">{{ nb_users }}</span>
-    </div>
-    <div class="stat-card">
+    </a>
+
+    <a href="/admin/playbacks" class="stat-card">
         <span class="stat-label">Playbacks</span>
         <span class="stat-value">{{ nb_playbacks }}</span>
-    </div>
-    <div class="stat-card">
+    </a>
+
+    <a href="/admin/playbacks" class="stat-card">
         <span class="stat-label">Achats</span>
         <span class="stat-value">{{ nb_purchases }}</span>
-    </div>
-    <div class="stat-card">
+    </a>
+
+    <a href="/admin/historique" class="stat-card">
         <span class="stat-label">Points distribués</span>
         <span class="stat-value">{{ total_points_distributed }} pts</span>
-    </div>
-    <div class="stat-card">
+    </a>
+
+    <a href="/admin/recharges" class="stat-card">
         <span class="stat-label">Recharges validées</span>
         <span class="stat-value">{{ nb_recharges_validated }}</span>
-    </div>
-    <div class="stat-card">
+    </a>
+
+    <a href="/admin/recharges" class="stat-card {% if nb_recharges_pending > 0 %}stat-card-alert{% endif %}">
         <span class="stat-label">En attente</span>
         <span class="stat-value">{{ nb_recharges_pending }}</span>
-    </div>
+    </a>
 </div>
 
 <h3>🔗 Raccourcis</h3>

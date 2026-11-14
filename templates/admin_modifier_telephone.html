@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="/admin">📊 Tableau de bord</a>
+    <a href="/admin/utilisateurs" class="active">👥 Utilisateurs</a>
+    <a href="/admin/playbacks">🎵 Playbacks</a>
+    <a href="/admin/recharges">💳 Recharges</a>
+    <a href="/admin/playback/new">➕ Nouveau playback</a>
+    <a href="/admin/historique">📜 Historique</a>
+</div>
+
+<h2>📱 Modifier le téléphone de {{ u.username }}</h2>
+
+<div style="background:#181818; padding:20px; border-radius:12px; margin-bottom:20px;">
+    <p>Pseudo : <strong>{{ u.username }}</strong></p>
+    <p>Numéro actuel : <strong>{{ u.phone }}</strong></p>
+    <p>Points : {{ u.points }} pts</p>
+    <p>Playbacks : {{ u.purchases|length }}</p>
+</div>
+
+<form method="post">
+    <p>
+        <label>Nouveau numéro de téléphone</label>
+        <input type="tel" name="telephone" required minlength="10" value="{{ u.phone }}">
+        <small style="color:#888; display:block; margin-top:4px;">
+            Le numéro doit contenir au moins 10 chiffres et ne pas être déjà utilisé.
+        </small>
+    </p>
+    <p>
+        <button type="submit">Confirmer le changement</button>
+        <a href="/admin/utilisateurs" style="margin-left:10px;">Annuler</a>
+    </p>
+</form>
+
+<p style="color:#b3b3b3; font-size:0.85rem; margin-top:20px;">
+    ⚠️ Cette action est tracée dans l'historique admin.
+</p>
+
+<p><a href="/admin/utilisateurs">Retour</a></p>
+{% endblock %}

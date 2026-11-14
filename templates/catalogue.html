@@ -1,102 +1,255 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <div class="catalogue-intro">
-    <h2>Bienvenue sur PLAYBACK.MG</h2>
-    <p>
-        Découvrez notre catalogue de playbacks soigneusement sélectionnés.
-        Chaque playback est accompagné d'un extrait audio pour vous permettre
-        de l'écouter avant de l'acquérir. Une fois propriétaire, vous accédez
-        au fichier complet, à écouter en ligne ou à télécharger.
-    </p>
+  <h2>Bienvenue sur PLAYBACK.MG</h2>
+  <p>
+    Playbacks <strong>dès 10 000 Ar</strong>.
+    <strong>Chaque commande vous rapporte des points</strong>
+
+    grâce aux points obtenus, vous pouvez
+    <strong>acheter d'autres playbacks gratuitement</strong>.
+    <br />
+    <strong>Explorez le catalogue.</strong>
+  </p>
 </div>
 
-<h2>Catalogue des playbacks</h2>
+<div class="catalogue-header">
+  <h2>Catalogue des playbacks</h2>
+  <form method="get" action="/catalogue" class="search-form">
+    <input
+      type="text"
+      name="q"
+      placeholder="🔍 Rechercher un playback ou un créateur..."
+      value="{{ q or '' }}"
+    />
+    <button type="submit">Rechercher</button>
+    {% if q %}
+    <a href="/catalogue" class="search-clear">✕ Effacer</a>
+    {% endif %}
+  </form>
+</div>
 
-{% if playbacks %}
+{% if q %}
+<p style="color: #b3b3b3; margin-bottom: 15px">
+  {% if playbacks %} 🔍 <strong>{{ playbacks|length }}</strong> résultat(s) pour
+  « <strong>{{ q }}</strong> » {% else %} Aucun résultat pour «
+  <strong>{{ q }}</strong> » {% endif %}
+</p>
+{% endif %} {% if playbacks %}
 <ul class="playlist">
-    {% for pb in playbacks %}
-    {% set is_owner = current_user.is_authenticated and pb.purchases|selectattr('user_id', 'equalto', current_user.id)|list|length > 0 %}
-    <li class="playlist-item">
-        <div class="playlist-cover">🎵</div>
-        <div class="playlist-info">
-            <span class="playlist-title">{{ pb.title }}</span>
-            <span class="playlist-artist">{{ pb.creator.username if pb.creator else "Inconnu" }}</span>
+  {% for pb in playbacks %} {% set is_owner = current_user.is_authenticated and
+  pb.purchases|selectattr('user_id', 'equalto', current_user.id)|list|length > 0
+  %}
+  <li class="playlist-item {% if pb.is_private %}private{% endif %}">
+    <div class="playlist-cover">🎵</div>
+    <div class="playlist-info">
+      <span class="playlist-title">{{ pb.title }}</span>
+      <span class="playlist-artist"
+        >{{ pb.creator.username if pb.creator else "Inconnu" }}</span
+      >
 
-            {% if is_owner %}
-                <span style="font-size:0.8rem; color:#1db954;">✅ Vous possédez ce playback</span>
-            {% elif pb.is_free %}
-                <span style="font-size:0.8rem; color:#1db954;">🟢 Gratuit pour tous</span>
-            {% endif %}
-
-            {# --- LECTEUR --- #}
-            {% if is_owner or pb.is_free %}
-                {# Propriétaire OU gratuit : lecteur complet #}
-                {% if pb.full_source == 'youtube' and pb.full_url %}
-                    {% set yt_id = pb.full_url.split('v=')[-1].split('&')[0] if 'v=' in pb.full_url else pb.full_url.split('/')[-1].split('?')[0] %}
-                    <div style="margin-top:8px;">
-                        <small style="color:#1db954;">🎧 Fichier complet :</small>
-                        <iframe width="280" height="158" style="border:none; border-radius:8px; display:block; margin-top:4px;"
-                            src="https://www.youtube.com/embed/{{ yt_id }}"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope"
-                            allowfullscreen></iframe>
-                    </div>
-                {% elif pb.full_source == 'drive' and pb.full_url %}
-                    {% set drive_id = pb.full_url.split('/d/')[-1].split('/')[0] if '/d/' in pb.full_url else pb.full_url.split('id=')[-1].split('&')[0] %}
-                    <div style="margin-top:8px;">
-                        <small style="color:#1db954;">🎧 Fichier complet :</small>
-                        <iframe width="280" height="80" style="border:none; border-radius:8px; display:block; margin-top:4px;"
-                            src="https://drive.google.com/file/d/{{ drive_id }}/preview"
-                            allow="autoplay"></iframe>
-                    </div>
-                {% else %}
-                    <p style="font-size:0.8rem; color:#888; margin-top:8px;">
-                        <em>Aucun fichier complet disponible.</em>
-                    </p>
-                {% endif %}
-            {% else %}
-                {# Non propriétaire : démo #}
-                {% if pb.demo_source == 'youtube' and pb.demo_url %}
-                    {% set yt_id = pb.demo_url.split('v=')[-1].split('&')[0] if 'v=' in pb.demo_url else pb.demo_url.split('/')[-1].split('?')[0] %}
-                    <div style="margin-top:8px;">
-                        <small style="color:#888;">🎬 Démo :</small>
-                        <iframe width="280" height="158" style="border:none; border-radius:8px; display:block; margin-top:4px;"
-                            src="https://www.youtube.com/embed/{{ yt_id }}"
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope"
-                            allowfullscreen></iframe>
-                    </div>
-                {% elif pb.demo_source == 'drive' and pb.demo_url %}
-                    {% set drive_id = pb.demo_url.split('/d/')[-1].split('/')[0] if '/d/' in pb.demo_url else pb.demo_url.split('id=')[-1].split('&')[0] %}
-                    <div style="margin-top:8px;">
-                        <small style="color:#888;">🎬 Démo :</small>
-                        <iframe width="280" height="80" style="border:none; border-radius:8px; display:block; margin-top:4px;"
-                            src="https://drive.google.com/file/d/{{ drive_id }}/preview"
-                            allow="autoplay"></iframe>
-                    </div>
-                {% endif %}
-            {% endif %}
-        </div>
-        <div class="playlist-meta">
-            {% if not is_owner %}
-                <span class="playlist-price">Prix : {{ pb.display_price() }}</span>
-            {% endif %}
-            <span class="playlist-owners">{{ pb.owner_count }} propriétaires</span>
-        </div>
-        <div class="playlist-action">
-            {% if is_owner %}
-                <a href="/ecoute/{{ pb.id }}">Écouter</a>
-            {% elif pb.is_free %}
-                <a href="/ecoute/{{ pb.id }}">Gratuit</a>
-            {% else %}
-                <a href="/achat/{{ pb.id }}">Acheter</a>
-            {% endif %}
-        </div>
-    </li>
-    {% endfor %}
+      {% if pb.is_private %}
+      <span></span>
+      {% elif is_owner %}
+      <span style="font-size: 0.8rem; color: #1db954"
+        >✅ Vous possédez ce playback</span
+      >
+      {% elif pb.is_free %}
+      <span style="font-size: 0.8rem; color: #1db954">🎧 Gratuit</span>
+      {% endif %} {# --- LECTEUR --- #} {% if pb.is_private %} {# Playback privé
+      : démo publique uniquement #} {% if pb.demo_source == 'youtube' and
+      pb.demo_url %} {% set yt_id = pb.demo_url.split('v=')[-1].split('&')[0] if
+      'v=' in pb.demo_url else pb.demo_url.split('/')[-1].split('?')[0] %}
+      <div style="margin-top: 8px">
+        <small style="color: #888">🎬 Démo publique :</small>
+        <iframe
+          width="280"
+          height="158"
+          style="
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 4px;
+          "
+          src="https://www.youtube.com/embed/{{ yt_id }}"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope"
+          allowfullscreen
+        ></iframe>
+      </div>
+      {% elif pb.demo_source == 'drive' and pb.demo_url %} {% set drive_id =
+      pb.demo_url.split('/d/')[-1].split('/')[0] if '/d/' in pb.demo_url else
+      pb.demo_url.split('id=')[-1].split('&')[0] %}
+      <div style="margin-top: 8px">
+        <small style="color: #888">🎬 Démo publique :</small>
+        <iframe
+          width="280"
+          height="80"
+          style="
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 4px;
+          "
+          src="https://drive.google.com/file/d/{{ drive_id }}/preview"
+          allow="autoplay"
+        ></iframe>
+      </div>
+      {% endif %} {% elif is_owner or pb.is_free %} {# Propriétaire OU gratuit :
+      lecteur complet #} {% if pb.full_source == 'youtube' and pb.full_url %} {%
+      set yt_id = pb.full_url.split('v=')[-1].split('&')[0] if 'v=' in
+      pb.full_url else pb.full_url.split('/')[-1].split('?')[0] %}
+      <div style="margin-top: 8px">
+        <small style="color: #1db954"></small>
+        <iframe
+          width="280"
+          height="158"
+          style="
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 4px;
+          "
+          src="https://www.youtube.com/embed/{{ yt_id }}"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope"
+          allowfullscreen
+        ></iframe>
+      </div>
+      {% elif pb.full_source == 'drive' and pb.full_url %} {% set drive_id =
+      pb.full_url.split('/d/')[-1].split('/')[0] if '/d/' in pb.full_url else
+      pb.full_url.split('id=')[-1].split('&')[0] %}
+      <div style="margin-top: 8px">
+        <small style="color: #1db954"></small>
+        <iframe
+          width="280"
+          height="80"
+          style="
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 4px;
+          "
+          src="https://drive.google.com/file/d/{{ drive_id }}/preview"
+          allow="autoplay"
+        ></iframe>
+      </div>
+      {% endif %} {% else %} {# Non propriétaire : démo #} {% if pb.demo_source
+      == 'youtube' and pb.demo_url %} {% set yt_id =
+      pb.demo_url.split('v=')[-1].split('&')[0] if 'v=' in pb.demo_url else
+      pb.demo_url.split('/')[-1].split('?')[0] %}
+      <div style="margin-top: 8px">
+        <small style="color: #888">🎬 Démo :</small>
+        <iframe
+          width="280"
+          height="158"
+          style="
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 4px;
+          "
+          src="https://www.youtube.com/embed/{{ yt_id }}"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope"
+          allowfullscreen
+        ></iframe>
+      </div>
+      {% elif pb.demo_source == 'drive' and pb.demo_url %} {% set drive_id =
+      pb.demo_url.split('/d/')[-1].split('/')[0] if '/d/' in pb.demo_url else
+      pb.demo_url.split('id=')[-1].split('&')[0] %}
+      <div style="margin-top: 8px">
+        <small style="color: #888">🎬 Démo :</small>
+        <iframe
+          width="280"
+          height="80"
+          style="
+            border: none;
+            border-radius: 8px;
+            display: block;
+            margin-top: 4px;
+          "
+          src="https://drive.google.com/file/d/{{ drive_id }}/preview"
+          allow="autoplay"
+        ></iframe>
+      </div>
+      {% endif %} {% endif %}
+    </div>
+    <div class="playlist-meta">
+      {% if pb.is_private %}
+      <span class="playlist-price" style="color: #f39c12"
+        >30 000 Ar (privé)</span
+      >
+      <span class="playlist-owners" style="color: #f39c12">
+        ⚠️ Seul le créateur a accès au fichier complet</span
+      >
+      {% else %} {% if not is_owner and pb.price > 0 %}
+      <span class="playlist-price">Prix : {{ pb.display_price() }}</span>
+      {% endif %}
+      <span class="playlist-owners">{{ pb.owner_count }} propriétaires</span>
+      {% endif %}
+    </div>
+    <div class="playlist-action">
+      {% if pb.is_private %}
+      <span class="private-action">🔒</span>
+      {% elif is_owner %}
+      <a href="/ecoute/{{ pb.id }}">▶️ / Télecharger </a>
+      {% elif pb.is_free %}
+      <a href="/ecoute/{{ pb.id }}">
+        <svg
+          xmlns="http://w3.org"
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#22c55e"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+      </a>
+      {% else %}
+      <a href="/achat/{{ pb.id }}"> 🛒 Acheter</a>
+      {% endif %}
+    </div>
+  </li>
+  {% endfor %}
 </ul>
+
+{# 🆕 BANNIÈRE PLAYBACK PRIVÉ #}
+<div class="private-banner">
+  <div class="private-banner-icon">🔒</div>
+  <div class="private-banner-content">
+    <p>
+      <strong>Playback privé</strong> à
+      <br />
+      <strong style="color: #1db954">30 000 Ar</strong>
+      Seul vous aurez accès au fichier complet.
+    </p>
+    <p style="font-size: 0.85rem; color: #b3b3b3">
+      <a href="/cgu" target="_blank">Voir les conditions d'utilisation</a> pour
+      plus d'informations.
+    </p>
+  </div>
+  <a
+    href="https://wa.me/261345369612?text=Bonjour%2C%20je%20souhaite%20commander%20un%20playback%20priv%C3%A9%20%C3%A0%2030%20000%20Ar.%20Voici%20mon%20besoin%20%3A%20"
+    target="_blank"
+    class="private-banner-btn"
+  >
+    Commander un playback privé
+  </a>
+</div>
+<div class="private-banner-alt">
+  <p>
+    💡 Si vous commandez un playback <strong>non privé</strong>, le tarif est à
+    <br />
+    <strong class="price-highlight">10 000 Ar</strong>
+    <br />
+    Vous pourrez alors en acheter d'autres gratuitement avec les points que vous
+    obtiendrez grâce aux ventes.
+  </p>
+</div>
 {% else %}
 <p>Aucun playback pour le moment.</p>
-{% endif %}
-
-{% endblock %}
+{% endif %} {% endblock %}

@@ -21,15 +21,16 @@
     <header>
       <div class="header-left">
         <h1>
-          <img
-            src="{{ url_for('static', filename='logo.png') }}"
-            alt="PLAYBACK.MG"
-            class="logo"
-          />
-          <span class="logo-text">PLAYBACK.MG</span>
+          <a href="/" class="logo-link">
+            <img
+              src="{{ url_for('static', filename='logo.png') }}"
+              alt="PLAYBACK.MG"
+              class="logo"
+            />
+            <span class="logo-text">PLAYBACK.MG</span>
+          </a>
         </h1>
         <nav class="desktop-nav">
-          <a href="/">Accueil</a>
           <a href="/catalogue">Catalogue</a>
         </nav>
       </div>
@@ -43,8 +44,8 @@
         >
         {% endif %}
 
-        <div class="user-menu desktop-only">
-          <span class="user-name" tabindex="0">
+        <div class="user-menu desktop-only" id="userMenu">
+          <span class="user-name" id="userName" tabindex="0">
             👤 {{ current_user.username }}
             <span class="user-points">💰 {{ current_user.points }} pts</span>
             <span class="user-playbacks"
@@ -55,7 +56,7 @@
             {% endif %}
             <span class="arrow">▾</span>
           </span>
-          <div class="user-dropdown">
+          <div class="user-dropdown" id="userDropdown">
             <div class="user-summary">
               <strong>{{ current_user.username }}</strong><br />
               <small
@@ -68,7 +69,7 @@
             <a href="/dashboard">Mon profil</a>
             <a href="/mes-playbacks">Mes playbacks</a>
             <a href="/mes-gains">Mes gains</a>
-            <a href="/recharge">Recharger</a>
+            <a href="/recharge">💳 Recharger</a>
             <a href="/mes-notifications">
               🔔 Notifications {% if unread_notifications > 0 %}
               <span class="notif-badge-inline">{{ unread_notifications }}</span>
@@ -78,7 +79,9 @@
             <a href="/admin">👑 Administration</a>
             {% endif %}
             <hr style="border-color: #333; margin: 5px 0" />
-            <a href="/logout">Déconnexion</a>
+            <a href="/logout"
+              >⏻ Déconnexion</a
+            >
           </div>
         </div>
         {% else %}
@@ -102,12 +105,14 @@
     <aside class="mobile-menu">
       <div class="mobile-menu-header">
         <h3>
-          <img
-            src="{{ url_for('static', filename='logo.png') }}"
-            alt="PLAYBACK.MG"
-            class="logo-small"
-          />
-          PLAYBACK.MG
+          <a href="/" class="logo-link">
+            <img
+              src="{{ url_for('static', filename='logo.png') }}"
+              alt="PLAYBACK.MG"
+              class="logo-small"
+            />
+            PLAYBACK.MG
+          </a>
         </h3>
         <label for="menu-toggle" class="close-button">✕</label>
       </div>
@@ -124,7 +129,6 @@
       {% endif %}
 
       <nav class="mobile-nav">
-        <a href="/">🏠 Accueil</a>
         <a href="/catalogue">🎵 Catalogue</a>
         {% if current_user.is_authenticated %}
         <a href="/dashboard">👤 Mon profil</a>
@@ -156,6 +160,131 @@
 
     <main>{% block content %}{% endblock %}</main>
 
-    <footer><p>© 2026 PLAYBACK.MG</p></footer>
+    <footer>
+      <p>© 2026 PLAYBACK.MG - Tous droits réservés.</p>
+      <p>
+        <a href="/support">Support</a> |
+        <a href="/cgu">Conditions d'utilisation</a> |
+        <a href="/confidentialite">Politique de confidentialité</a>
+      </p>
+    </footer>
+
+    <!-- Bouton flottant WhatsApp -->
+    <div class="whatsapp-float" id="whatsappFloat">
+      <button
+        class="whatsapp-toggle"
+        id="whatsappToggle"
+        aria-label="Contacter le support"
+      >
+        💬
+      </button>
+      <div class="whatsapp-menu" id="whatsappMenu">
+        <a
+          href="https://wa.me/261345369612?text=Bonjour%2C%20je%20souhaite%20faire%20une%20recharge.%20Mon%20pseudo%20sur%20PLAYBACK.MG%20est%20%3A%20"
+          target="_blank"
+          class="whatsapp-item"
+        >
+          💳 Faire une recharge
+        </a>
+        <a
+          href="https://wa.me/261345369612?text=Bonjour%2C%20je%20souhaite%20commander%20un%20playback%20personnalis%C3%A9.%20Voici%20mon%20besoin%20%3A%20"
+          target="_blank"
+          class="whatsapp-item"
+        >
+          🎵 Commander un playback
+        </a>
+        <a
+          href="https://wa.me/261345369612?text=Bonjour%2C%20j%27ai%20besoin%20d%27aide%20sur%20PLAYBACK.MG%20%3A%20"
+          target="_blank"
+          class="whatsapp-item"
+        >
+          ❓ Aide / Question
+        </a>
+        <a href="/support" class="whatsapp-item"> 📞 Tous les contacts </a>
+      </div>
+    </div>
+
+    <script>
+      // Bouton WhatsApp flottant
+      (function () {
+        const float = document.getElementById("whatsappFloat");
+        const toggle = document.getElementById("whatsappToggle");
+        const menu = document.getElementById("whatsappMenu");
+
+        if (!float || !toggle || !menu) return;
+
+        toggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          float.classList.toggle("open");
+        });
+
+        // Fermer si on clique ailleurs
+        document.addEventListener("click", (e) => {
+          if (!float.contains(e.target)) {
+            float.classList.remove("open");
+          }
+        });
+      })();
+    </script>
+
+    <script>
+      // Menu utilisateur avec délai de fermeture
+      (function () {
+        const menu = document.getElementById("userMenu");
+        const name = document.getElementById("userName");
+        const dropdown = document.getElementById("userDropdown");
+
+        if (!menu || !name || !dropdown) return;
+
+        let closeTimeout;
+
+        function openMenu() {
+          clearTimeout(closeTimeout);
+          dropdown.style.display = "block";
+        }
+
+        function scheduleClose() {
+          clearTimeout(closeTimeout);
+          closeTimeout = setTimeout(() => {
+            dropdown.style.display = "none";
+          }, 2500); // 2.5 secondes de délai
+        }
+
+        // Ouvrir au survol du nom
+        name.addEventListener("mouseenter", openMenu);
+        name.addEventListener("mouseleave", scheduleClose);
+
+        // Annuler la fermeture si on survole le menu
+        dropdown.addEventListener("mouseenter", openMenu);
+        dropdown.addEventListener("mouseleave", scheduleClose);
+
+        // Fermer immédiatement au clic sur un lien
+        dropdown.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            clearTimeout(closeTimeout);
+            dropdown.style.display = "none";
+          });
+        });
+
+        // Sur mobile : ouvrir/fermer au clic
+        name.addEventListener("click", (e) => {
+          if (window.innerWidth <= 768) {
+            e.preventDefault();
+            if (dropdown.style.display === "block") {
+              dropdown.style.display = "none";
+            } else {
+              openMenu();
+            }
+          }
+        });
+
+        // Fermer si on clique ailleurs
+        document.addEventListener("click", (e) => {
+          if (!menu.contains(e.target)) {
+            dropdown.style.display = "none";
+          }
+        });
+      })();
+    </script>
   </body>
 </html>

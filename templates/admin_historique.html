@@ -1,50 +1,52 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <div class="admin-tabs">
-    <a href="/admin">📊 Tableau de bord</a>
-    <a href="/admin/utilisateurs">👥 Utilisateurs</a>
-    <a href="/admin/playbacks">🎵 Playbacks</a>
-    <a href="/admin/recharges">💳 Recharges</a>
-    <a href="/admin/playback/new">➕ Nouveau playback</a>
-    <a href="/admin/historique" class="active">📜 Historique</a>
+  <a href="/admin">📊 Tableau de bord</a>
+  <a href="/admin/utilisateurs">👥 Utilisateurs</a>
+  <a href="/admin/playbacks">🎵 Playbacks</a>
+  <a href="/admin/recharges">💳 Recharges</a>
+  <a href="/admin/playback/new">➕ Nouveau playback</a>
+  <a href="/admin/historique" class="active">📜 Historique</a>
 </div>
 
 <h2>📜 Historique des actions admin</h2>
 
 {% if actions %}
 <table class="responsive-table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Admin</th>
-            <th>Action</th>
-            <th>Cible</th>
-            <th>Détails</th>
-        </tr>
-    </thead>
-    <tbody>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Admin</th>
+      <th>Action</th>
+      <th>Cible</th>
+      <th>Détails</th>
+    </tr>
+  </thead>
+  <tbody>
     {% for a in actions %}
     <tr>
-        <td data-label="Date">{{ a.created_at.strftime("%d/%m/%Y %H:%M") if a.created_at else "—" }}</td>
-        <td data-label="Admin">{{ a.admin.username if a.admin else "—" }}</td>
-        <td data-label="Action">
-            {% if a.action == 'modifier_points' %}💰 Modification points
-            {% elif a.action == 'promouvoir' %}⬆ Promotion admin
-            {% elif a.action == 'retrograder' %}⬇ Rétrogradation admin
-            {% elif a.action == 'bloquer' %}🚫 Blocage
-            {% elif a.action == 'debloquer' %}🔓 Déblocage
-            {% elif a.action == 'valider_recharge' %}✅ Validation recharge
-            {% elif a.action == 'refuser_recharge' %}❌ Refus recharge
-            {% elif a.action == 'creer_playback' %}🎵 Création playback
-            {% else %}{{ a.action }}{% endif %}
-        </td>
-        <td data-label="Cible">{{ a.target_user.username if a.target_user else "—" }}</td>
-        <td data-label="Détails">{{ a.details or "—" }}</td>
+      <td data-label="Date">
+        {{ a.created_at.strftime("%d/%m/%Y %H:%M") if a.created_at else "—" }}
+      </td>
+      <td data-label="Admin">{{ a.admin.username if a.admin else "—" }}</td>
+      <td data-label="Action">
+        {% if a.action == 'modifier_points' %}💰 Modification points {% elif
+        a.action == 'modifier_telephone' %}📱 Modification téléphone {% elif
+        a.action == 'promouvoir' %}⬆ Promotion admin {% elif a.action ==
+        'retrograder' %}⬇ Rétrogradation admin {% elif a.action == 'bloquer'
+        %}🚫 Blocage {% elif a.action == 'debloquer' %}🔓 Déblocage {% elif
+        a.action == 'valider_recharge' %}✅ Validation recharge {% elif a.action
+        == 'refuser_recharge' %}❌ Refus recharge {% elif a.action ==
+        'creer_playback' %}🎵 Création playback {% elif a.action == 'modifier_playback' %}✏️ Modification playback {% else %}{{ a.action }}{% endif
+        %} 
+      </td>
+      <td data-label="Cible">
+        {{ a.target_user.username if a.target_user else "—" }}
+      </td>
+      <td data-label="Détails">{{ a.details or "—" }}</td>
     </tr>
     {% endfor %}
-    </tbody>
+  </tbody>
 </table>
 {% else %}
 <p>Aucune action enregistrée.</p>

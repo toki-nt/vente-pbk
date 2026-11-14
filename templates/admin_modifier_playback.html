@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="admin-tabs">
+    <a href="/admin">📊 Tableau de bord</a>
+    <a href="/admin/utilisateurs">👥 Utilisateurs</a>
+    <a href="/admin/playbacks" class="active">🎵 Playbacks</a>
+    <a href="/admin/recharges">💳 Recharges</a>
+    <a href="/admin/playback/new">➕ Nouveau playback</a>
+    <a href="/admin/historique">📜 Historique</a>
+</div>
+
+<h2>✏️ Modifier le playback : {{ pb.title }}</h2>
+
+<div class="user-info-card">
+    <p><strong>ID :</strong> {{ pb.id }}</p>
+    <p><strong>Créateur :</strong> {{ pb.creator.username if pb.creator else "Inconnu" }}</p>
+    <p><strong>Propriétaires :</strong> {{ pb.owner_count }}</p>
+    <p>
+        <strong>Statut :</strong>
+        {% if pb.is_private %}🔒 Privé (30 000 Ar){% elif pb.is_free %}🟢 Gratuit{% else %}🔴 En vente{% endif %}
+    </p>
+</div>
+
+<form method="post">
+    <p>
+        <label>Titre</label>
+        <input type="text" name="title" value="{{ pb.title }}" required>
+    </p>
+
+    <p>
+        <label>Prix de départ (Ar)</label>
+        <input type="number" name="price" value="{{ pb.price }}" min="1000" step="1000" required>
+        <small style="color:#888;display:block;margin-top:4px;">
+            Ignoré si le playback est privé (prix forcé à 30 000 Ar).
+        </small>
+    </p>
+
+    <hr style="border-color:#333; margin:20px 0;">
+
+    <p>
+        <label>🎬 Lien démo (extrait public — YouTube ou Google Drive)</label>
+        <input type="url" name="demo_url" value="{{ pb.demo_url or '' }}" placeholder="https://www.youtube.com/watch?v=...">
+        <small style="color:#888;display:block;margin-top:4px;">
+            Visible par tous les visiteurs.
+        </small>
+    </p>
+
+    <p>
+        <label>🎧 Lien complet (fichier entier — YouTube ou Google Drive)</label>
+        <input type="url" name="full_url" value="{{ pb.full_url or '' }}" placeholder="https://www.youtube.com/watch?v=...">
+        <small style="color:#888;display:block;margin-top:4px;">
+            Visible uniquement par les propriétaires.
+        </small>
+    </p>
+
+    <hr style="border-color:#333; margin:20px 0;">
+
+    <p style="display:flex;align-items:flex-start;gap:10px;background:#282828;padding:15px;border-radius:8px;margin:15px 0;">
+        <input type="checkbox" name="is_private" id="is_private" value="on" {% if pb.is_private %}checked{% endif %} style="width:auto;margin-top:4px;">
+        <label for="is_private" style="cursor:pointer;font-size:0.9rem;">
+            <strong>🔒 Playback privé (non achetable)</strong><br>
+            <small style="color:#b3b3b3;display:block;margin-top:4px;">
+                Prix fixe : <strong style="color:#1db954;">30 000 Ar</strong>. Non achetable via des points.
+            </small>
+        </label>
+    </p>
+
+    <p>
+        <button type="submit">💾 Enregistrer les modifications</button>
+        <a href="/admin/playbacks" style="margin-left:10px;">Annuler</a>
+    </p>
+</form>
+
+<div class="admin-note">
+    ⚠️ Toute modification est <strong>tracée</strong> dans l'historique admin, et le créateur reçoit une <strong>notification</strong>.
+</div>
+
+<p><a href="/admin/playbacks">← Retour à la liste des playbacks</a></p>
+{% endblock %}

@@ -19,6 +19,7 @@
             {% elif n.type == 'recharge_refused' %}❌ Recharge refusée
             {% elif n.type == 'playback_created' %}🎵 Playback créé
             {% elif n.type == 'points_manual' %}💰 Ajustement admin
+            {% elif n.type == 'playback_modified' %}✏️ Playback modifié
             {% else %}{{ n.type }}{% endif %}
         </td>
         <td data-label="Message">{{ n.message }}</td>

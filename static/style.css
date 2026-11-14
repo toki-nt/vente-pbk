@@ -296,7 +296,7 @@ tr:hover td {
 
 /* ---------- MESSAGES FLASH ---------- */
 .flash {
-    background: #1db954;
+    background: #b91d1d65;
     color: #ffffff;
     padding: 12px 18px;
     border-radius: 8px;
@@ -503,12 +503,6 @@ header nav a:hover {
     border: 1px solid #282828;
 }
 
-.user-menu:hover .user-dropdown,
-.user-menu:focus-within .user-dropdown,
-.user-dropdown:hover {
-    display: block;
-}
-
 .user-dropdown a {
     display: block;
     color: #e0e0e0;
@@ -578,8 +572,6 @@ header nav a:hover {
 }
 /* ---------- INTRO DU CATALOGUE ---------- */
 .catalogue-intro {
-    background: linear-gradient(135deg, #181818 0%, #1f1f1f 100%);
-    border-left: 4px solid #1db954;
     border-radius: 12px;
     padding: 25px 30px;
     margin-bottom: 30px;
@@ -598,7 +590,6 @@ header nav a:hover {
     font-size: 0.95rem;
     line-height: 1.7;
     margin: 0;
-    max-width: 800px;
 }
 /* ---------- BOUTON GÉNÉRIQUE ---------- */
 .btn {
@@ -1381,4 +1372,814 @@ tr.blocked {
         height: 32px;
         margin-right: 0;
     }
+}
+/* ============================================================
+   LOGO CLIQUABLE
+   ============================================================ */
+
+.logo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
+}
+
+.logo-link:hover {
+    opacity: 0.8;
+    text-decoration: none;
+}
+
+.logo-link:hover .logo {
+    transform: scale(1.05);
+}
+
+.logo-link:hover .logo-text {
+    color: #1db954;
+}
+
+.logo {
+    transition: transform 0.2s;
+}
+
+.logo-text {
+    transition: color 0.2s;
+}
+
+/* Dans le panneau burger */
+.mobile-menu-header h3 a {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.mobile-menu-header h3 a:hover {
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+/* ============================================================
+   CGU & CONFIDENTIALITÉ
+   ============================================================ */
+
+/* Pages CGU / Confidentialité */
+section h3, main h3 {
+    color: #1db954;
+    margin-top: 25px;
+}
+
+section ul, main ul {
+    padding-left: 25px;
+    margin-bottom: 15px;
+}
+
+section li, main li {
+    margin-bottom: 6px;
+    color: #d0d0d0;
+}
+
+/* Pied de page */
+footer a {
+    color: #888;
+    font-size: 0.85rem;
+    margin: 0 8px;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #1db954;
+    text-decoration: underline;
+}
+
+/* Case à cocher CGU */
+input[type="checkbox"] {
+    accent-color: #1db954;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+label[for="accept_cgu"] a {
+    color: #1db954;
+    text-decoration: underline;
+}
+/* ============================================================
+   BOUTON FLOTTANT WHATSAPP
+   ============================================================ */
+
+.whatsapp-float {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1000;
+}
+
+.whatsapp-toggle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #25d366;
+    color: #fff;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.whatsapp-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.7);
+}
+
+.whatsapp-menu {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    background: #181818;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    border: 1px solid #282828;
+    min-width: 220px;
+    overflow: hidden;
+}
+
+.whatsapp-float.open .whatsapp-menu {
+    display: block;
+    animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.whatsapp-item {
+    display: block;
+    padding: 12px 18px;
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #282828;
+    transition: background 0.15s;
+}
+
+.whatsapp-item:last-child {
+    border-bottom: none;
+}
+
+.whatsapp-item:hover {
+    background: #282828;
+    color: #25d366;
+    text-decoration: none;
+}
+
+/* ============================================================
+   PAGE SUPPORT
+   ============================================================ */
+
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.support-card {
+    background: #181818;
+    border-radius: 12px;
+    padding: 25px;
+    border-left: 4px solid #1db954;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.support-icon {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+}
+
+.support-card h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+.support-card p {
+    color: #b3b3b3;
+    font-size: 0.9rem;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.support-card .btn {
+    display: inline-block;
+    padding: 10px 18px;
+    background: #1db954;
+    color: #fff;
+    border-radius: 25px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.support-card .btn:hover {
+    background: #1ed760;
+    text-decoration: none;
+    transform: scale(1.03);
+}
+
+/* Bouton WhatsApp dans le support */
+.support-card .btn[href*="wa.me"] {
+    background: #25d366;
+}
+
+.support-card .btn[href*="wa.me"]:hover {
+    background: #1fb855;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .whatsapp-float {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .whatsapp-toggle {
+        width: 55px;
+        height: 55px;
+        font-size: 1.5rem;
+    }
+
+    .support-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ---------- STATS CARDS ---------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: #181818;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-left: 4px solid #1db954;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+    cursor: pointer;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.3);
+    background: #202020;
+    text-decoration: none;
+}
+
+.stat-card:active {
+    transform: translateY(-1px);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #b3b3b3;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Carte avec alerte (recharges en attente) */
+.stat-card-alert {
+    border-left-color: #f39c12;
+    background: rgba(243, 156, 18, 0.08);
+}
+
+.stat-card-alert:hover {
+    box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+}
+
+.stat-card-alert .stat-value {
+    color: #f39c12;
+}
+
+/* ============================================================
+   AVERTISSEMENT INSCRIPTION
+   ============================================================ */
+
+.register-warning {
+    background: rgba(243, 156, 18, 0.1);
+    border-left: 4px solid #f39c12;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    color: #e0e0e0;
+}
+
+.register-warning summary {
+    padding: 15px 20px;
+    cursor: pointer;
+    color: #f39c12;
+    font-weight: 700;
+    font-size: 0.95rem;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.register-warning summary::-webkit-details-marker {
+    display: none;
+}
+
+.register-warning summary::after {
+    content: '▼';
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+    color: #f39c12;
+}
+
+.register-warning[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.register-warning summary:hover {
+    background: rgba(243, 156, 18, 0.15);
+}
+
+.register-warning ul {
+    padding: 0 22px 18px 42px;
+    margin: 0;
+}
+
+.register-warning li {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.register-warning li strong {
+    color: #ffffff;
+}
+
+/* Message d'erreur rouge dans les CGU */
+.cgu-warning {
+    background: rgba(226, 33, 52, 0.1);
+    border-left: 4px solid #e22134;
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 20px 0;
+}
+
+/* ============================================================
+   ADMIN — MODIFIER TÉLÉPHONE
+   ============================================================ */
+
+.user-info-card {
+    background: #181818;
+    border-left: 4px solid #1db954;
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+}
+
+.user-info-card p {
+    margin-bottom: 8px;
+    color: #e0e0e0;
+}
+
+.user-info-card code {
+    background: #282828;
+    color: #1db954;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.admin-note {
+    background: rgba(243, 156, 18, 0.1);
+    border-left: 4px solid #f39c12;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-top: 25px;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.admin-note strong {
+    color: #f39c12;
+}
+
+/* Admin — historique — nouvelle action */
+.admin-action-modifier-telephone {
+    color: #f39c12;
+}
+/* ============================================================
+   PAGE RECHARGE — BLOC FORMULAIRE EN PREMIER
+   ============================================================ */
+
+.recharge-form-block {
+    background: #181818;
+    border-left: 4px solid #1db954;
+    border-radius: 12px;
+    padding: 25px 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(29, 185, 84, 0.15);
+}
+
+.recharge-form-block h3 {
+    color: #1db954;
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.recharge-form-block form {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+}
+
+/* Étapes (comment recharger) */
+.recharge-steps {
+    background: #181818;
+    border-left: 4px solid #b3b3b3;
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin: 20px 0;
+}
+
+.recharge-steps h3 {
+    color: #b3b3b3;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.recharge-steps ol {
+    padding-left: 22px;
+    margin: 0;
+}
+
+.recharge-steps li {
+    color: #d0d0d0;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .recharge-form-block {
+        padding: 20px;
+    }
+}
+
+/* ============================================================
+   PAGE RECHARGE — AIDES SOUS LES CHAMPS
+   ============================================================ */
+
+.recharge-form-block small {
+    color: #888;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.recharge-form-block small strong {
+    color: #1db954;
+}
+/* ============================================================
+   PLAYBACKS PRIVÉS
+   ============================================================ */
+
+.playlist-item.private {
+    border-left: 3px solid #f39c12;
+}
+
+.playlist-item.private .playlist-cover {
+    background: linear-gradient(135deg, #f39c12, #c87f0a);
+}
+
+.private-badge {
+    display: inline-block;
+    background: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 4px;
+}
+/* ============================================================
+   BANNIÈRE PLAYBACK PRIVÉ
+   ============================================================ */
+
+.private-banner {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(243, 156, 18, 0.05));
+    border-left: 4px solid #f39c12;
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.private-banner-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.private-banner-content {
+    flex: 1;
+    min-width: 250px;
+}
+
+.private-banner-content strong {
+    color: #f39c12;
+    font-size: 1.05rem;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.private-banner-content p {
+    color: #d0d0d0;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    line-height: 1.5;
+}
+
+.private-banner-content a {
+    color: #1db954;
+    text-decoration: underline;
+}
+
+.private-banner-btn {
+    display: inline-block;
+    padding: 12px 22px;
+    background: #25d366;
+    color: #ffffff;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+}
+
+.private-banner-btn:hover {
+    background: #1fb855;
+    text-decoration: none;
+    transform: scale(1.03);
+}
+
+/* ============================================================
+   PLAYBACK PRIVÉ DANS LE CATALOGUE
+   ============================================================ */
+
+.playlist-item.private {
+    border-left: 3px solid #f39c12;
+    background: rgba(243, 156, 18, 0.03);
+}
+
+.playlist-item.private .playlist-cover {
+    background: linear-gradient(135deg, #f39c12, #c87f0a);
+}
+
+.private-badge {
+    display: inline-block;
+    background: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 6px;
+    width: fit-content;
+}
+
+.private-action {
+    display: inline-block;
+    padding: 8px 18px;
+    background: rgba(243, 156, 18, 0.15);
+    color: #f39c12;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .private-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        padding: 18px;
+    }
+
+    .private-banner-icon {
+        font-size: 2rem;
+    }
+
+    .private-banner-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+/* ============================================================
+   BANNIÈRE PRIVÉE — ALTERNATIVE (playback non privé)
+   ============================================================ */
+
+.private-banner-alt {
+  background: rgba(29, 185, 84, 0.08);
+  border-left: 3px solid #1db954;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-top: 12px;
+}
+
+.private-banner-alt p {
+  font-size: 0.9rem;
+  color: #d0d0d0;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.private-banner-alt strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.private-banner-alt .price-highlight {
+  color: #1db954;
+  font-weight: 700;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .private-banner-alt {
+    padding: 10px 14px;
+  }
+
+  .private-banner-alt p {
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================================================
+   CATALOGUE — HEADER ET RECHERCHE
+   ============================================================ */
+
+.catalogue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.catalogue-header h2 {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* Formulaire de recherche */
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+    max-width: 500px;
+    min-width: 250px;
+}
+
+.search-form input[type="text"] {
+    flex: 1;
+    padding: 10px 14px;
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 25px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-form input[type="text"]:focus {
+    border-color: #1db954;
+}
+
+.search-form input[type="text"]::placeholder {
+    color: #888;
+}
+
+.search-form button {
+    padding: 10px 18px;
+    background: #1db954;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.search-form button:hover {
+    background: #1ed760;
+}
+
+.search-clear {
+    color: #b3b3b3;
+    text-decoration: none;
+    font-size: 0.85rem;
+    padding: 8px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+}
+
+.search-clear:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e22134;
+    text-decoration: none;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .catalogue-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .search-form {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .search-form button {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+}
+/* ============================================================
+   BOUTON MODIFIER PLAYBACK
+   ============================================================ */
+
+.btn-edit {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #1db954;
+    color: #ffffff;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: background 0.2s, transform 0.1s;
+    vertical-align: middle;
+}
+
+.btn-edit:hover {
+    background: #1ed760;
+    color: #ffffff;
+    text-decoration: none;
+    transform: scale(1.05);
 }

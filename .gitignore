@@ -1,20 +1,50 @@
+# ============================================================
+# PLAYBACK.MG — .gitignore
+# ============================================================
+
 # Base de données
 *.db
 *.sqlite
+*.sqlite3
 instance/
 
 # Environnement virtuel
 venv/
 env/
+ENV/
 
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Variables d'environnement (SECRETS)
+.env
+.env.*
+!.env.example
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # Fichiers temporaires
 *.log
+*.bak
+*.tmp
 .DS_Store
+Thumbs.db
+
+# Uploads (si tu ajoutes des fichiers audio plus tard)
+static/uploads/
+
+# Sauvegardes de la base
+*.db.bak
+*.db.backup

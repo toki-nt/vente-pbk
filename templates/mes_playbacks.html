@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Mes playbacks</h2>
+<h2>📂 Mes playbacks</h2>
 <p>Solde : <strong>{{ current_user.points }} pts</strong> ({{ current_user.points }} Ar)</p>
 
 {% if purchases %}
@@ -16,7 +16,7 @@
         <div class="playlist-meta">
             <span class="playlist-date">Acheté le {{ p.created_at.strftime("%d/%m/%Y") if p.created_at else "—" }}</span>
         </div>
-        <div class="playlist-action"><a href="/ecoute/{{ p.playback.id }}">Écouter</a></div>
+        <div class="playlist-action"><a href="/ecoute/{{ p.playback.id }}">▶️ / Télecharger</a></div>
     </li>
     {% endfor %}
 </ul>

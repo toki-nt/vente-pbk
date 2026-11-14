@@ -2,22 +2,48 @@
 
 {% block content %}
 <h2>Créer un compte</h2>
+
+<details class="register-warning">
+    <summary>⚠️ Important à savoir avant de vous inscrire (cliquez pour voir)</summary>
+    <ul>
+        <li>Votre <strong>pseudo</strong> doit contenir au moins <strong>3 caractères</strong>.</li>
+        <li>Votre <strong>mot de passe</strong> doit contenir au moins <strong>4 caractères</strong>.</li>
+        <li>Votre <strong>numéro de téléphone</strong> doit être <strong>unique</strong> (un seul compte par numéro).</li>
+        <li><strong>La récupération de compte n'est pas possible.</strong> Notez bien votre pseudo et votre mot de passe. En cas d'oubli, vous devrez recréer un compte et <strong>perdre tous vos points</strong>.</li>
+    </ul>
+</details>
+
 <form method="post">
     <p>
-        <label>Pseudo</label>
-        <input type="text" name="username" required>
+        <label>Pseudo (min. 3 caractères)</label>
+        <input type="text" name="username" minlength="3" required placeholder="Ex : Rakoto">
     </p>
     <p>
-        <label>Téléphone (Mobile Money)</label>
-        <input type="tel" name="phone" required>
+        <label>Téléphone (Mobile Money — min. 10 chiffres)</label>
+        <input type="tel" name="phone" required placeholder="Ex : 0340000002" minlength="10">
+        <small style="color:#b3b3b3; display:block; margin-top:4px;">
+            Veuillez utiliser le numéro de téléphone à votre disposition (Mobile Money)
+            pour faciliter la vérification de vos paiements.
+        </small>
     </p>
     <p>
-        <label>Mot de passe</label>
-        <input type="password" name="password" required>
+        <label>Mot de passe (min. 4 caractères)</label>
+        <input type="password" name="password" minlength="4" required>
     </p>
     <p>
-        <button type="submit">S'inscrire</button>
+        <label>Confirmer le mot de passe</label>
+        <input type="password" name="password_confirm" minlength="4" required>
     </p>
+    <p style="display:flex; align-items:flex-start; gap:8px; margin:15px 0;">
+        <input type="checkbox" name="accept_cgu" id="accept_cgu" required style="margin-top:4px; width:auto;">
+        <label for="accept_cgu" style="font-size:0.85rem; color:#b3b3b3;">
+            J'accepte les <a href="/cgu" target="_blank">conditions d'utilisation</a>
+            et la <a href="/confidentialite" target="_blank">politique de confidentialité</a>.
+            Je comprends que la <strong>récupération de compte n'est pas possible</strong>
+            et que je dois conserver mes identifiants.
+        </label>
+    </p>
+    <p><button type="submit">S'inscrire</button></p>
 </form>
 <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
 {% endblock %}
